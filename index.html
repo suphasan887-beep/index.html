@@ -356,5 +356,327 @@
     }
 </script>
 
+
+
+
+<style>
+    /* ปุ่มลอยตัวมุมขวาล่าง */
+    .calc-float-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 55px;
+        height: 55px;
+        background: #3b82f6;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        cursor: pointer;
+        z-index: 99999;
+        user-select: none;
+        transition: transform 0.2s;
+    }
+    .calc-float-btn:hover {
+        transform: scale(1.08);
+    }
+
+    /* กล่องเครื่องคิดเลข พร้อมแอนิเมชั่นเด้งเปิด-ปิด */
+    .calc-container {
+        position: fixed;
+        bottom: 95px;
+        right: 30px;
+        width: 300px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        z-index: 100000;
+        overflow: hidden;
+        user-select: none;
+        
+        transform: scale(0.7);
+        transform-origin: bottom right;
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease, visibility 0.25s ease;
+    }
+
+    .calc-container.active {
+        transform: scale(1);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .calc-header {
+        background: #f1f5f9;
+        color: #334155;
+        padding: 10px 14px;
+        font-weight: bold;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+        cursor: grab;
+    }
+    .calc-header:active {
+        cursor: grabbing;
+    }
+    .calc-close {
+        cursor: pointer;
+        font-size: 16px;
+        color: #64748b;
+        padding: 0 4px;
+    }
+    .calc-close:hover {
+        color: #ef4444;
+    }
+
+    /* หน้าจอแสดงผล + คลาสแอนิเมชั่นเด้งเวลาพิมพ์ */
+    .calc-screen {
+        width: 100%;
+        height: 65px;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 32px;
+        text-align: right;
+        padding: 12px 16px;
+        border: none;
+        box-sizing: border-box;
+        outline: none;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s;
+    }
+
+    /* เอฟเฟกต์เด้งดึ๋งเวลาตัวเลขถูกกดพิมพ์ */
+    .calc-screen.bounce-anim {
+        transform: scale(1.06);
+        color: #2563eb;
+    }
+
+    /* จัดวางปุ่มตามมาตรฐาน */
+    .calc-keys {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        gap: 8px;
+        padding: 12px;
+        background: #f8fafc;
+    }
+    
+    .calc-keys button {
+        padding: 14px 0;
+        font-size: 16px;
+        font-weight: 500;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #ffffff;
+        cursor: pointer;
+        color: #1e293b;
+        transition: background 0.1s, transform 0.05s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .calc-keys button:active { 
+        background: #f1f5f9; 
+        transform: scale(0.95);
+    }
+    
+    .calc-keys button.memory { color: #475569; font-size: 14px; font-weight: bold; }
+    .calc-keys button.operator-top { color: #2563eb; }
+    .calc-keys button.operator { color: #2563eb; font-weight: bold; }
+    
+    .calc-keys button.equal { 
+        background: #2563eb; 
+        color: white; 
+        grid-column: 4; 
+        grid-row: 4 / span 2; 
+        height: 100%;
+        border-color: #1d4ed8;
+        font-size: 22px;
+    }
+    .calc-keys button.equal:active {
+        background: #1d4ed8;
+    }
+</style>
+
+<!-- ปุ่มวงกลมลอยตัว -->
+<div class="calc-float-btn" id="floatBtn" title="เปิดเครื่องคิดเลข">🧮</div>
+
+<!-- หน้าต่างเครื่องคิดเลข -->
+<div class="calc-container" id="calcContainer">
+    <div class="calc-header" id="calcHeader">
+        <span>เครื่องคิดเลข</span>
+        <span class="calc-close" id="closeBtn">✕</span>
+    </div>
+    <input type="text" class="calc-screen" id="calcScreen" readonly value="0">
+    <div class="calc-keys">
+        <button class="memory">MC</button>
+        <button class="memory">M+</button>
+        <button class="memory">M-</button>
+        <button class="memory">MR</button>
+        
+        <button class="operator-top" onclick="calcClear()">C</button>
+        <button class="operator-top" onclick="calcAppend('/')">÷</button>
+        <button class="operator-top" onclick="calcAppend('*')">×</button>
+        <button class="operator-top" onclick="calcBackSpace()">⌫</button>
+        
+        <button onclick="calcAppend('7')">7</button>
+        <button onclick="calcAppend('8')">8</button>
+        <button onclick="calcAppend('9')">9</button>
+        <button class="operator" onclick="calcAppend('-')">-</button>
+        
+        <button onclick="calcAppend('4')">4</button>
+        <button onclick="calcAppend('5')">5</button>
+        <button onclick="calcAppend('6')">6</button>
+        <button class="operator" onclick="calcAppend('+')">+</button>
+        
+        <button onclick="calcAppend('1')">1</button>
+        <button onclick="calcAppend('2')">2</button>
+        <button onclick="calcAppend('3')">3</button>
+        <button class="equal" onclick="calcCalculate()">=</button>
+        
+        <button class="operator-top" onclick="calcAppend('%')">%</button>
+        <button onclick="calcAppend('0')">0</button>
+        <button onclick="calcAppend('.')">.</button>
+    </div>
+</div>
+
+<script>
+    const floatBtn = document.getElementById('floatBtn');
+    const calcContainer = document.getElementById('calcContainer');
+    const closeBtn = document.getElementById('closeBtn');
+
+    floatBtn.addEventListener('click', () => {
+        calcContainer.classList.add('active');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        calcContainer.classList.remove('active');
+    });
+
+    function makeDraggable(elm, handle) {
+        let posX = 0, posY = 0, mouseX = 0, mouseY = 0;
+        handle.onmousedown = dragMouseDown;
+        handle.ontouchstart = dragTouchStart;
+
+        function dragMouseDown(e) {
+            e.preventDefault();
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e.preventDefault();
+            posX = mouseX - e.clientX;
+            posY = mouseY - e.clientY;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            elm.style.top = (elm.offsetTop - posY) + "px";
+            elm.style.left = (elm.offsetLeft - posX) + "px";
+            elm.style.bottom = "auto";
+            elm.style.right = "auto";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+
+        function dragTouchStart(e) {
+            let touch = e.touches[0];
+            mouseX = touch.clientX;
+            mouseY = touch.clientY;
+            document.ontouchend = closeTouchDrag;
+            document.ontouchmove = elementTouchDrag;
+        }
+
+        function elementTouchDrag(e) {
+            let touch = e.touches[0];
+            posX = mouseX - touch.clientX;
+            posY = mouseY - touch.clientY;
+            mouseX = touch.clientX;
+            mouseY = touch.clientY;
+            elm.style.top = (elm.offsetTop - posY) + "px";
+            elm.style.left = (elm.offsetLeft - posX) + "px";
+            elm.style.bottom = "auto";
+            elm.style.right = "auto";
+        }
+
+        function closeTouchDrag() {
+            document.ontouchend = null;
+            document.ontouchmove = null;
+        }
+    }
+
+    makeDraggable(calcContainer, document.getElementById('calcHeader'));
+
+    let calcInput = "0";
+
+    function triggerBounce() {
+        let screen = document.getElementById('calcScreen');
+        screen.classList.add('bounce-anim');
+        setTimeout(() => {
+            screen.classList.remove('bounce-anim');
+        }, 150); // ระยะเวลาดีดตัวกลับขนาดปกติ
+    }
+
+    function updateCalcScreen() {
+        document.getElementById('calcScreen').value = calcInput;
+        triggerBounce(); // สั่งให้หน้าจอเด้งดึ๋งทุกครั้งที่มีการเปลี่ยนค่า
+    }
+
+    function calcAppend(val) {
+        if (calcInput === "0" && val !== '.') {
+            calcInput = val;
+        } else {
+            calcInput += val;
+        }
+        updateCalcScreen();
+    }
+
+    function calcClear() {
+        calcInput = "0";
+        updateCalcScreen();
+    }
+
+    function calcBackSpace() {
+        if (calcInput.length > 1) {
+            calcInput = calcInput.slice(0, -1);
+        } else {
+            calcInput = "0";
+        }
+        updateCalcScreen();
+    }
+
+    function calcCalculate() {
+        try {
+            let result = eval(calcInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/%/g, '/100'));
+            calcInput = String(result);
+            updateCalcScreen();
+        } catch (error) {
+            calcInput = "Error";
+            updateCalcScreen();
+            setTimeout(calcClear, 1500);
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+    
+
 </body>
 </html>
