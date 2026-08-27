@@ -183,11 +183,12 @@
 
     <!-- กล่องที่ 3: ยอดโอน & ค่าแก๊ส -->
     <div class="box">
-        <div class="box-title">💳 ยอดโอนเก่า-ใหม่ & ค่าแก๊ส</div>
+        <div class="box-title">💳 ยอดโอนเก่า-ใหม่ & ค่าแก๊ส / ค่าอื่นๆ</div>
         <div class="form-row"><label>ยอดโอนเก่า:</label><input type="number" id="transfer_old" class="input-md" placeholder="0" oninput="updateAllCalculations()"></div>
         <div class="form-row"><label>ยอดโอนใหม่:</label><input type="number" id="transfer_new" class="input-md" placeholder="0" oninput="updateAllCalculations()"></div>
         <div class="form-row"><label>เงินสดในมือ:</label><input type="number" id="cash_hand" class="input-md" placeholder="0" oninput="updateAllCalculations()"></div>
         <div class="form-row"><label>หักค่าแก๊ส (ถ้ามี):</label><input type="number" id="gas_cost" class="input-md" placeholder="0" oninput="updateAllCalculations()"></div>
+        <div class="form-row"><label>ค่าอื่นๆ (ถ้ามี):</label><input type="number" id="other_cost" class="input-md" placeholder="0" oninput="updateAllCalculations()"></div>
         <div style="margin-top: 10px; font-weight: bold; color: #0284c7; text-align: right;">
             สุทธิกล่อง 3: <span id="box3_total">0</span> บาท
         </div>
@@ -274,9 +275,10 @@
         let tNew = parseFloat(document.getElementById('transfer_new').value) || 0;
         let cash = parseFloat(document.getElementById('cash_hand').value) || 0;
         let gas = parseFloat(document.getElementById('gas_cost').value) || 0;
+        let other = parseFloat(document.getElementById('other_cost').value) || 0;
 
         let transferDiff = tNew - tOld; 
-        let total3 = transferDiff + cash + gas;
+        let total3 = transferDiff + cash + gas + other;
         document.getElementById('box3_total').innerText = total3.toLocaleString();
 
         let remHip = hipStock - soldHip;
@@ -323,6 +325,7 @@
         let stickyRounds = document.getElementById('sticky_rounds').value || '----';
         
         let gasCost = document.getElementById('gas_cost').value || '----';
+        let otherCost = document.getElementById('other_cost').value || '----';
         let cashHand = document.getElementById('cash_hand').value || '----';
 
         let text = `ไก่สดเหลือ\n` +
@@ -343,7 +346,7 @@
                    `ทอดหนัง ${soldSkinFry}\n` +
                    `นึ่งข้าว ${stickyRounds} รอบ\n` +
                    `เหลือ โล\n\n` +
-                   `เงินสด ----- +แก๊ส ${gasCost}\n` +
+                   `เงินสด ----- +แก๊ส ${gasCost} +อื่นๆ ${otherCost}\n` +
                    `โอน-----+คนละครึ่ง0\n` +
                    `รวม \n` +
                    `เหรียญ300\n` +
@@ -356,188 +359,6 @@
     }
 </script>
 
-
-
-
-<style>
-    /* ปุ่มลอยตัวมุมขวาล่าง */
-    .calc-float-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 55px;
-        height: 55px;
-        background: #3b82f6;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-        cursor: pointer;
-        z-index: 99999;
-        user-select: none;
-        transition: transform 0.2s;
-    }
-    .calc-float-btn:hover {
-        transform: scale(1.08);
-    }
-
-    /* กล่องเครื่องคิดเลข พร้อมแอนิเมชั่นเด้งเปิด-ปิด */
-    .calc-container {
-        position: fixed;
-        bottom: 95px;
-        right: 30px;
-        width: 300px;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        z-index: 100000;
-        overflow: hidden;
-        user-select: none;
-        
-        transform: scale(0.7);
-        transform-origin: bottom right;
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease, visibility 0.25s ease;
-    }
-
-    .calc-container.active {
-        transform: scale(1);
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .calc-header {
-        background: #f1f5f9;
-        color: #334155;
-        padding: 10px 14px;
-        font-weight: bold;
-        font-size: 14px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #e2e8f0;
-        cursor: grab;
-    }
-    .calc-header:active {
-        cursor: grabbing;
-    }
-    .calc-close {
-        cursor: pointer;
-        font-size: 16px;
-        color: #64748b;
-        padding: 0 4px;
-    }
-    .calc-close:hover {
-        color: #ef4444;
-    }
-
-    /* หน้าจอแสดงผล + คลาสแอนิเมชั่นเด้งเวลาพิมพ์ */
-    .calc-screen {
-        width: 100%;
-        height: 65px;
-        background: #ffffff;
-        color: #0f172a;
-        font-size: 32px;
-        text-align: right;
-        padding: 12px 16px;
-        border: none;
-        box-sizing: border-box;
-        outline: none;
-        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s;
-    }
-
-    /* เอฟเฟกต์เด้งดึ๋งเวลาตัวเลขถูกกดพิมพ์ */
-    .calc-screen.bounce-anim {
-        transform: scale(1.06);
-        color: #2563eb;
-    }
-
-    /* จัดวางปุ่มตามมาตรฐาน */
-    .calc-keys {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(5, 1fr);
-        gap: 8px;
-        padding: 12px;
-        background: #f8fafc;
-    }
-    
-    .calc-keys button {
-        padding: 14px 0;
-        font-size: 16px;
-        font-weight: 500;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        background: #ffffff;
-        cursor: pointer;
-        color: #1e293b;
-        transition: background 0.1s, transform 0.05s;
-        -webkit-tap-highlight-color: transparent;
-    }
-    .calc-keys button:active { 
-        background: #f1f5f9; 
-        transform: scale(0.95);
-    }
-    
-    .calc-keys button.memory { color: #475569; font-size: 14px; font-weight: bold; }
-    .calc-keys button.operator-top { color: #2563eb; }
-    .calc-keys button.operator { color: #2563eb; font-weight: bold; }
-    
-    .calc-keys button.equal { 
-        background: #2563eb; 
-        color: white; 
-        grid-column: 4; 
-        grid-row: 4 / span 2; 
-        height: 100%;
-        border-color: #1d4ed8;
-        font-size: 22px;
-    }
-    .calc-keys button.equal:active {
-        background: #1d4ed8;
-    }
-</style>
-
-<!-- ปุ่มวงกลมลอยตัว -->
-<div class="calc-float-btn" id="floatBtn" title="เปิดเครื่องคิดเลข">🧮</div>
-
-<!-- หน้าต่างเครื่องคิดเลข -->
-<div class="calc-container" id="calcContainer">
-    <div class="calc-header" id="calcHeader">
-        <span>เครื่องคิดเลข</span>
-        <span class="calc-close" id="closeBtn">✕</span>
-    </div>
-    <input type="text" class="calc-screen" id="calcScreen" readonly value="0">
-    <div class="calc-keys">
-        <button class="memory">MC</button>
-        <button class="memory">M+</button>
-        <button class="memory">M-</button>
-        <button class="memory">MR</button>
-        
-        <button class="operator-top" onclick="calcClear()">C</button>
-        <button class="operator-top" onclick="calcAppend('/')">÷</button>
-        <button class="operator-top" onclick="calcAppend('*')">×</button>
-        <button class="operator-top" onclick="calcBackSpace()">⌫</button>
-        
-        <button onclick="calcAppend('7')">7</button>
-        <button onclick="calcAppend('8')">8</button>
-        <button onclick="calcAppend('9')">9</button>
-        <button class="operator" onclick="calcAppend('-')">-</button>
-        
-        <button onclick="calcAppend('4')">4</button>
-        <button onclick="calcAppend('5')">5</button>
-        <button onclick="calcAppend('6')">6</button>
-        <button class="operator" onclick="calcAppend('+')">+</button>
-        
-        <button onclick="calcAppend('1')">1</button>
-        <button onclick="calcAppend('2')">2</button>
-        <button onclick="calcAppend('3')">3</button>
-        <button class="equal" onclick="calcCalculate()">=</button>
-        
         <button class="operator-top" onclick="calcAppend('%')">%</button>
         <button onclick="calcAppend('0')">0</button>
         <button onclick="calcAppend('.')">.</button>
@@ -666,17 +487,6 @@
     }
 </script>
 
-
-
-
-
-
-
-
-
-
-
-    
 
 </body>
 </html>
