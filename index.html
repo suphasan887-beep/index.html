@@ -330,9 +330,13 @@
         let sCarcass = soldCarcass * (parseFloat(document.getElementById('p_carcass').value) || 0);
         let sSkin = soldSkin * (parseFloat(document.getElementById('p_skin').value) || 0);
 
-        let rounds = parseFloat(document.getElementById('sticky_rounds').value) || 0;
-        let stickyKg = rounds * 11; 
-        let sSticky = stickyKg * 29;
+                let rounds = parseFloat(document.getElementById('sticky_rounds').value) || 0;
+        let baseKg = rounds * 11;          // เอาจำนวนรอบคูณ 11 (เช่น 7 รอบ ได้ 77)
+        let stickyKg = baseKg * 1.5;       // เอาคูณน้ำหนักเพิ่ม 1.5 เท่า
+        let sSticky = stickyKg * 29;       // คูณราคา กก. ละ 29 บาท
+
+        document.getElementById('sticky_summary').innerText = `- รวมน้ำหนัก: ${stickyKg.toLocaleString()} กก. (รอบ × 11 × 1.5) | ราคา ${sSticky.toLocaleString()} บาท`;
+
 
         document.getElementById('sticky_summary').innerText = `- รวมน้ำหนัก: ${stickyKg.toLocaleString()} กก. (${sSticky.toLocaleString()} บาท)`;
 
