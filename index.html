@@ -473,6 +473,50 @@
             
     
     
+            <!-- 💎 การ์ดปุ่มขอรับ Server VIP -->
+        <div class="hero-card" style="margin-bottom: 20px; padding: 20px;">
+            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff;">
+                <i class="fa-solid fa-crown" style="color: #10b981;"></i> บริการเสริม Server VIP
+            </h3>
+            <p class="hero-desc" style="font-size: 13px; margin-bottom: 15px;">
+                กดปุ่มด้านล่างเพื่อส่งคำขอรับ Server VIP เข้าดิสคอร์ด
+            </p>
+            <button id="vip-btn" class="dl-btn" style="width: 100%; border: none; cursor: pointer; background: #10b981; color: #fff; padding: 12px; border-radius: 8px; font-weight: bold;">
+                <i class="fa-solid fa-crown"></i> กดรับเซิร์ฟวีไอพีในดิสคอร์ด
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const webhookUrl = "https://discord.com/api/webhooks/1547148610289008660/2uvF95O2vsz_slW7yqJ2jukhAeMwg0lkdayaOsY2hfKZvh3J3IBxiooJCLR-agKT5g8t";
+
+    document.getElementById("vip-btn").addEventListener("click", function(event) {
+        const vipLink = "https://www.roblox.com/share?code=3428e3dc25eb8646a91e310ee6670cd8&type=Server";
+
+        const payload = {
+            embeds: [{
+                title: "💎 คำขอรับ Server VIP ใหม่!",
+                description: "มีผู้ใช้งานกดปุ่มขอรับเซิร์ฟวีไอพีจากหน้าเว็บ\n\n🔗 **คลิกเพื่อเข้าเซิร์ฟเวอร์:** [กดที่นี่เพื่อเข้า Server VIP](" + vipLink + ")",
+                color: 5763719,
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        fetch(webhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if(response.ok) {
+                alert("ระบบได้ส่งคำขอและลิงก์ไปยัง Discord เรียบร้อยแล้ว!");
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
     
                             
 
