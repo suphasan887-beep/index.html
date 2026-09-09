@@ -473,7 +473,7 @@
             
     
     
-                    <!-- 💎 การ์ดปุ่มขอรับ Server VIP -->
+                            <!-- 💎 การ์ดปุ่มขอรับ Server VIP -->
         <div class="hero-card" style="margin-bottom: 20px; padding: 20px;">
             <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff;">
                 <i class="fa-solid fa-crown" style="color: #10b981;"></i> บริการเสริม Server VIP
@@ -490,36 +490,50 @@
 </div>
 
 <script>
-    const webhookUrl = "https://discord.com/api/webhooks/1547148610289008660/2uvF95O2vsz_slW7yqJ2jukhAeMwg0lkdayaOsY2hfKZvh3J3IBxiooJCLR-agKT5g8t";
-    let isSending = false; // ตัวแปรล็อกไม่ให้ส่งเบิ้ล
-
-    document.getElementById("vip-btn").addEventListener("click", function(event) {
-        if (isSending) return; // ถ้ากำลังส่งอยู่ จะไม่ยอมให้กดซ้ำ
-        isSending = true;
-
+    (function() {
+        const webhookUrl = "https://discord.com/api/webhooks/1547148610289008660/2uvF95O2vsz_slW7yqJ2jukhAeMwg0lkdayaOsY2hfKZvh3J3IBxiooJCLR-agKT5g8t";
         const vipLink = "https://www.roblox.com/share?code=3428e3dc25eb8646a91e310ee6670cd8&type=Server";
+        const btn = document.getElementById("vip-btn");
 
-        const payload = {
-            content: "🔗 **ลิงก์ Server VIP ของคุณ:**\n" + vipLink
-        };
+        if (btn) {
+            btn.addEventListener("click", function(event) {
+                event.preventDefault();
 
-        fetch(webhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-        .then(response => {
-            setTimeout(() => { isSending = false; }, 2000);
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            isSending = false;
-        });
-    });
+                // ปิดการใช้งานปุ่มทันทีเพื่อป้องกันการกดเบิ้ล
+                if (btn.disabled) return;
+                btn.disabled = true;
+                btn.style.opacity = "0.6";
+                btn.style.cursor = "not-allowed";
+
+                const payload = {
+                    content: "🔗 **ลิงก์ Server VIP ของคุณ:**\n" + vipLink
+                };
+
+                fetch(webhookUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                })
+                .then(response => {
+                    // ไม่มีการแจ้งเตือน (alert) ใดๆ ทั้งสิ้น เงียบกริบ
+                    // เปิดใช้งานปุ่มใหม่อีกครั้งหลังจากผ่านไป 3 วินาที
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        btn.style.opacity = "1";
+                        btn.style.cursor = "pointer";
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    btn.style.cursor = "pointer";
+                });
+            });
+        }
+    })();
 </script>
 
-    
-                            
 
     
 
