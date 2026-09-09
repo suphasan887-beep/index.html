@@ -340,7 +340,28 @@
 
 
         
-        
+    
+    /* กำหนดพื้นหลังเว็บทั้งหน้าให้มีรูปภาพและปรับความโปร่งใส */
+    body {
+        position: relative;
+        background-color: #0f172a; /* สีพื้นหลังสำรองกรณีรูปโหลดไม่ขึ้น */
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* เปลี่ยนลิงก์รูปภาพใน url(...) นี้เป็นรูปที่มึงต้องการได้เลย */
+        background-image: url('https://i.ibb.co/CjrYJmt/Screenshot-20260909-172634-chrome.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        opacity: 0.15; /* ปรับความโปร่งใสตรงนี้ ยิ่งน้อยยิ่งจาง (เช่น 0.10 - 0.20 กำลังสวย) */
+        z-index: -1; /* ดันให้อยู่หลังสุด ไม่บังปุ่มหรือข้อความบนเว็บ */
+    }
 
 
 
