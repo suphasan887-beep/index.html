@@ -366,6 +366,23 @@
 
 
 
+    /* บังคับหน้าเว็บให้อยู่กึ่งกลาง และป้องกันการเลื่อนขวาเกินจอ */
+    html, body {
+        width: 100%;
+        overflow-x: hidden; /* ป้องกันหน้าจอเลื่อนหลุดไปฝั่งขวา */
+    }
+
+    .container {
+        max-width: 480px; /* ปรับความกว้างสูงสุดตามสไตล์เว็บมือถือ */
+        margin: 0 auto !important; /* ดึงซ้าย-ขวาให้อยู่กึ่งกลางพอดี */
+        float: none !important;
+        box-sizing: border-box;
+    }
+        
+
+        
+
+
         
     </style>
 </head>
