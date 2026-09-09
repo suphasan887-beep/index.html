@@ -473,7 +473,39 @@
     
     
     
-            <!-- 💎 การ์ดปุ่มขอรับ Server VIP แยกส่วนต่างหาก -->
+            
+    
+    
+    
+            // 💎 แจ้งเตือนเมื่อกดปุ่มขอรับ Server VIP
+        document.getElementById("vip-btn").addEventListener("click", function(event) {
+            const payload = {
+                embeds: [{
+                    title: "💎 มีคนกดขอรับ Server VIP แล้ว!",
+                    description: "**มีผู้ใช้งานกดปุ่มขอรับเซิร์ฟวีไอพี** จากหน้าเว็บ กรุณาตรวจสอบหรืออัปเดตลิงก์ Server VIP ในช่องแรกสุดของ Discord ได้เลยครับ!",
+                    color: 5763719,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if(response.ok) {
+                    alert("ส่งคำขอรับ Server VIP ไปที่ Discord เรียบร้อยแล้ว!");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    
+    
+    
+
+
+        <!-- 💎 การ์ดปุ่มขอรับ Server VIP แยกส่วนต่างหาก -->
         <div class="hero-card" style="margin-bottom: 20px; padding: 20px; text-align: center;">
             <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff;">
                 <i class="fa-solid fa-crown" style="color: #10b981;"></i> บริการเสริม Server VIP
@@ -486,13 +518,12 @@
             </button>
         </div>
     
-    
-    
-    
-    
-    
-    
 
+
+
+
+
+    
     <footer>
         <p>© 2026 Nexus Hub. All rights reserved. Designed for Content Creators.</p>
     </footer>
