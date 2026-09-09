@@ -477,12 +477,14 @@
     
     
     
-            // 💎 แจ้งเตือนเมื่อกดปุ่มขอรับ Server VIP
+                            // 💎 แจ้งเตือนเมื่อกดปุ่มขอรับ Server VIP พร้อมฝังลิงก์ในกล่องบอท
         document.getElementById("vip-btn").addEventListener("click", function(event) {
+            const vipLink = "https://www.roblox.com/games/ใส่ลิงก์เซิร์ฟวีไอพีตรงนี้";
+
             const payload = {
                 embeds: [{
-                    title: "💎 มีคนกดขอรับ Server VIP แล้ว!",
-                    description: "**มีผู้ใช้งานกดปุ่มขอรับเซิร์ฟวีไอพี** จากหน้าเว็บ กรุณาตรวจสอบหรืออัปเดตลิงก์ Server VIP ในช่องแรกสุดของ Discord ได้เลยครับ!",
+                    title: "💎 คำขอรับ Server VIP ใหม่!",
+                    description: "มีผู้ใช้งานกดปุ่มขอรับเซิร์ฟวีไอพีจากหน้าเว็บ\n\n🔗 **คลิกเพื่อเข้าเซิร์ฟเวอร์:** [กดที่นี่เพื่อเข้า Server VIP](" + vipLink + ")",
                     color: 5763719,
                     timestamp: new Date().toISOString()
                 }]
@@ -495,28 +497,13 @@
             })
             .then(response => {
                 if(response.ok) {
-                    alert("ส่งคำขอรับ Server VIP ไปที่ Discord เรียบร้อยแล้ว!");
+                    alert("ระบบได้ส่งคำขอและลิงก์ไปยัง Discord เรียบร้อยแล้ว!");
                 }
             })
             .catch(error => console.error("Error:", error));
         });
-    
-    
-    
 
 
-        <!-- 💎 การ์ดปุ่มขอรับ Server VIP แยกส่วนต่างหาก -->
-        <div class="hero-card" style="margin-bottom: 20px; padding: 20px; text-align: center;">
-            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #fff;">
-                <i class="fa-solid fa-crown" style="color: #10b981;"></i> บริการเสริม Server VIP
-            </h3>
-            <p class="hero-desc" style="font-size: 13px; margin-bottom: 15px;">
-                สำหรับผู้เล่นที่ต้องการฟาร์มแบบสงบๆ กดรับลิงก์เซิร์ฟวีไอพีผ่านดิสคอร์ดได้เลย
-            </p>
-            <button id="vip-btn" class="dl-btn btn-vip-action">
-                <i class="fa-solid fa-crown"></i> กดรับเซิร์ฟวีไอพีในดิสคอร์ด
-            </button>
-        </div>
     
 
 
