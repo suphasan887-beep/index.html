@@ -385,164 +385,69 @@
 
 
 
-
-
-
-
-/* Overlay พื้นหลังดำจางๆ เต็มจอ */
-.update-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(5, 5, 10, 0.85);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    animation: fadeInOverlay 0.4s ease forwards;
-}
-
-/* กล่องการ์ดตรงกลาง (เอฟเฟกต์น้ำวนรวมตัว -> ระเบิด) */
+/* จัดตำแหน่งกล่องการ์ดหลัก */
 .update-card {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(147, 51, 234, 0.4), rgba(6, 182, 212, 0.2));
     border: 2px solid var(--secondary);
-    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; /* รูปร่างหยดน้ำ/ของเหลว */
+    border-radius: 20px;
     padding: 30px 25px;
     text-align: center;
     max-width: 380px;
-    width: 90%;
+    width: 85%;
     box-shadow: 0 0 45px rgba(6, 182, 212, 0.7), inset 0 0 20px rgba(147, 51, 234, 0.5);
     transform: scale(0) rotate(-180deg);
     opacity: 0;
-    animation: waterAssemble 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; /* เด้งระเบิดออก */
+    animation: waterAssemble 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     position: relative;
-    overflow: hidden;
+    overflow: visible !important; /* ปล่อยให้ตัวละครโผล่พ้นขอบการ์ดได้ */
 }
 
-/* เอฟเฟกต์คลื่นน้ำด้านใน (Water ripple gloss) */
-.update-card::after {
-    content: '';
+/* ปรับตำแหน่งตัวละครให้อยู่ "ด้านขวา" ของการ์ดแบบในรูป */
+.character-presenter {
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
-    transform: rotate(0deg);
-    animation: waterSwirl 4s linear infinite;
-    pointer-events: none;
+    right: -70px; /* ยื่นออกไปทางขวาของการ์ด (ปรับตัวเลขนี้ได้ถ้าอยากให้ห่างเข้าหรือออกอีก) */
+    bottom: -15px; /* วางฐานให้อยู่ประมาณขอบล่างของการ์ด */
+    width: 140px;  /* ปรับขนาดความกว้างของตัวละครตามต้องการ */
+    height: 180px;
+    z-index: 20;
+    transform: scale(0) translateY(30px);
+    animation: charPopRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
 }
 
-@keyframes waterSwirl {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.1); }
-    100% { transform: rotate(360deg) scale(1); }
+.character-presenter img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.8));
 }
 
-/* ป้ายคำว่า NEW UPDATE */
-.update-badge {
-    display: inline-block;
-    background: linear-gradient(45deg, #06b6d4, #7928ca);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 6px 14px;
-    border-radius: 50px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
-    margin-bottom: 12px;
-    animation: hotPulse 1.5s infinite alternate;
-}
-
-.update-version {
-    font-size: 24px;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 8px;
-    text-shadow: 0 0 15px rgba(6, 182, 212, 1);
-}
-
-.update-text {
-    font-size: 13px;
-    color: var(--text-main);
-    margin-bottom: 20px;
-}
-
-.close-update-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: #fff;
-    padding: 8px 18px;
-    border-radius: 50px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.close-update-btn:hover {
-    background: var(--secondary);
-    border-color: var(--secondary);
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.8);
-}
-
-/* Keyframes ตอนน้ำรวมตัวแล้วระเบิดออก (Water Assemble) */
-@keyframes waterAssemble {
+/* แอนิเมชันให้ตัวละครโผล่ขึ้นมาจากทางขวา */
+@keyframes charPopRight {
     0% {
-        transform: scale(0) rotate(-180deg);
-        border-radius: 50%;
+        transform: scale(0) translateY(30px);
         opacity: 0;
     }
-    60% {
-        transform: scale(1.15) rotate(15deg);
-        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-        opacity: 1;
-    }
     100% {
-        transform: scale(1) rotate(0deg);
-        border-radius: 20px; /* ค่อยๆ ปรับเป็นมุมโค้งมนปกติของการ์ด */
+        transform: scale(1) translateY(0);
         opacity: 1;
     }
 }
 
-@keyframes fadeInOverlay {
-    from { opacity: 0; }
-    to { opacity: 1; }
+/* ตอนปิดให้น้ำกับตัวละครแยกออกจากกัน */
+.water-disperse .character-presenter {
+    animation: charFadeOut 0.5s ease forwards;
 }
 
-@keyframes hotPulse {
-    0% { transform: scale(1); box-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
-    100% { transform: scale(1.08); box-shadow: 0 0 22px rgba(6, 182, 212, 0.9); }
+@keyframes charFadeOut {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.5) translateY(20px); opacity: 0; }
 }
-
-/* คลาสตอนปิด: น้ำแตกกระจายแยกตัวออกจากกัน (Water Disperse / Splash Out) */
-.water-disperse {
-    animation: waterSplashOut 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards !important;
-}
-
-@keyframes waterSplashOut {
-    0% {
-        transform: scale(1) rotate(0deg);
-        border-radius: 20px;
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.2) rotate(-45deg);
-        border-radius: 70% 30% 50% 50% / 40% 60% 40% 60%;
-        filter: blur(2px);
-    }
-    100% {
-        transform: scale(0.2) rotate(180deg);
-        border-radius: 50%;
-        opacity: 0;
-        filter: blur(8px);
-        visibility: hidden;
-    }
-    }
         
+
+
+
+
+
 
 
         
