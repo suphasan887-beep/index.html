@@ -862,30 +862,15 @@
 
 
 
-    <!-- NEW UPDATE OVERLAY BANNER -->
+
+
+
+
+
+<!-- NEW UPDATE OVERLAY -->
 <div id="newUpdateOverlay" class="update-overlay">
     <div class="update-card">
-        <div class="update-badge">NEW UPDATE!</div>
-        <h2 class="update-version">Version 2.738.1397</h2>
-        <p class="update-text">อัปเดตระบบใหม่ ลื่นกว่าเดิม ปลอดภัย 100% พร้อมใช้งานแล้ววันนี้!</p>
-        <button class="close-update-btn" onclick="closeUpdateOverlay()">✕ ปิดหน้าต่างนี้</button>
-    </div>
-</div>
-
-
-
-
-
-
-
-    
-
-
-<script>
-
-<div id="newUpdateOverlay" class="update-overlay">
-    <div class="update-card">
-        <!-- 🧍‍♂️ ตัวละครจะยืนอยู่ทางขวานอกการ์ดตรงนี้ -->
+        <!-- ตัวละคร Roblox -->
         <div class="character-presenter">
             <img src="https://i.ibb.co/PZKT03cD/1844.png" alt="Roblox Avatar">
         </div>
@@ -893,11 +878,41 @@
         <div class="update-badge">NEW UPDATE!</div>
         <h2 class="update-version">Version 2.738.1397</h2>
         <p class="update-text">อัปเดตระบบใหม่ ลื่นกว่าเดิม ปลอดภัย 100% พร้อมใช้งานแล้ววันนี้!</p>
-        <button class="close-update-btn" onclick="closeUpdateOverlay()">✕ ปิดหน้าต่างนี้</button>
+        
+        <!-- ปุ่มปิด ใช้ onclick เรียก window.closeUpdateOverlay() ตรงๆ -->
+        <button type="button" class="close-update-btn" onclick="closeUpdateOverlay()">✕ ปิดหน้าต่างนี้</button>
     </div>
 </div>
+
+<script>
+    // ประกาศฟังก์ชันให้เป็น Global Scope (เรียกจากไหนก็เจอ)
+    window.closeUpdateOverlay = function() {
+        const overlay = document.getElementById('newUpdateOverlay');
+        const card = overlay ? overlay.querySelector('.update-card') : null;
+        
+        if (overlay && card) {
+            card.classList.add('water-disperse');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 600);
+        } else if (overlay) {
+            overlay.style.display = 'none';
+        }
+    };
+
+    // ตั้งเวลาให้ปิดเองอัตโนมัติ (Delay / Auto-close หลัง 4.5 วินาที)
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.closeUpdateOverlay();
+        }, 4500);
+    });
+</script>
     
-    </script>
+    
+
+
+
+    
 
     
 </body>
