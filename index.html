@@ -380,6 +380,122 @@
     }
         
 
+
+
+
+
+
+
+
+
+
+/* Overlay พื้นหลังดำจางๆ เต็มจอ */
+.update-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 10, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeInOverlay 0.4s ease forwards;
+}
+
+/* กล่องการ์ดตรงกลาง */
+.update-card {
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(6, 182, 212, 0.2));
+    border: 2px solid var(--primary);
+    border-radius: 20px;
+    padding: 30px 25px;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 0 35px rgba(147, 51, 234, 0.6), inset 0 0 15px rgba(6, 182, 212, 0.2);
+    transform: scale(0.7);
+    animation: popUpCard 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s forwards;
+    position: relative;
+}
+
+/* ป้ายคำว่า NEW UPDATE คล้ายสไตล์ HOT */
+.update-badge {
+    display: inline-block;
+    background: linear-gradient(45deg, #ff007f, #7928ca);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 50px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.7);
+    margin-bottom: 12px;
+    animation: hotPulse 1.5s infinite alternate;
+}
+
+.update-version {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+}
+
+.update-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.close-update-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-update-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Keyframes แอนิเมชัน */
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popUpCard {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes hotPulse {
+    0% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 0, 127, 0.5); }
+    100% { transform: scale(1.08); box-shadow: 0 0 22px rgba(255, 0, 127, 0.9); }
+}
+
+/* คลาสสำหรับสั่งให้จางหายไป */
+.fade-out {
+    animation: fadeOutOverlay 0.5s ease forwards !important;
+}
+
+@keyframes fadeOutOverlay {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); visibility: hidden; }
+}
+        
+
+
+
+        
         
 
 
