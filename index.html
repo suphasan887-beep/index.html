@@ -807,20 +807,24 @@
 
     <script>
     function closeUpdateOverlay() {
-        const overlay = document.getElementById('newUpdateOverlay');
-        if (overlay) {
-            overlay.classList.add('fade-out');
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 500);
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('newUpdateOverlay');
+    const card = overlay.querySelector('.update-card');
+    
+    if (overlay && card) {
+        card.classList.add('water-disperse'); // สั่งให้น้ำแตกกระจายแยกตัวออก
         setTimeout(() => {
-            closeUpdateOverlay();
-        }, 4500);
-    });
+            overlay.style.display = 'none';
+        }, 600); // ตรงกับเวลา animation 0.6s
+    }
+}
+
+// ตั้งเวลาให้มันเล่นแอนิเมชันน้ำแตกออกเองอัตโนมัติหลังผ่านไป 4.5 วินาที
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        closeUpdateOverlay();
+    }, 4500);
+});
+        
     </script>
     
 
