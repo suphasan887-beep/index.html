@@ -38,3 +38,25 @@ async function fetchBrandNewScript(btnElement) {
     }
 }
 
+
+
+
+
+// ⚡ สคริปต์สั่งย่อ/ขยาย ปุ่มแคปซูล
+function toggleCard(id) {
+    const item = document.querySelector(`[data-id="${id}"]`);
+    if (!item) return;
+
+    const btn = item.querySelector('.capsule-btn');
+    const card = document.getElementById(`card-${id}`);
+
+    if (card.style.display === "none") {
+        item.classList.add('active');
+        card.style.display = "block";
+        btn.style.display = "none";
+    } else {
+        item.classList.remove('active');
+        card.style.display = "none";
+        btn.style.display = "inline-flex";
+    }
+}
