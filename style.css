@@ -489,3 +489,64 @@ footer {
     margin-top: auto !important;
     box-sizing: border-box !important;
 }
+
+
+
+/* 1. ล้างค่าและเปิดใช้ Hardware Acceleration สำหรับมือถือ */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #0f172a;
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* ช่วยให้เบราว์เซอร์มือถือเลื่อนจอได้อย่างลื่นไหล */
+}
+
+/* 2. Header ด้านบน (ไม่กินแรงเครื่องตอนเลื่อน) */
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(5, 5, 10, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* 3. Container จัดกึ่งกลางพอดีเป๊ะ ไม่กินพื้นที่เกินจำเป็น */
+.container {
+    width: 92%;
+    max-width: 480px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 4. การ์ดเนื้อหาแสดงผลเต็มบล็อก */
+.hero-card, .docs-main-card {
+    width: 100%;
+}
+
+/* 5. ฟุตเตอร์ด้านล่างสุด */
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto;
+}
