@@ -424,63 +424,68 @@
 
 
 
-/* 1. ตั้งค่าพื้นฐานหน้าจอให้จัดกึ่งกลางและยืดหยุ่นเต็มที่ */
+/* 1. ล้างค่าพื้นฐานและบังคับให้ Body จัดทุกอย่างไว้ตรงกลางแนวนอน */
 body {
-    background-color: #0f172a;
-    color: var(--text-main);
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
     min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* จัดทุกอย่างให้อยู่กึ่งกลางหน้าจอแนวนอน */
-    justify-content: flex-start;
-    overflow-x: hidden;
-    position: relative;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* บังคับกึ่งกลางแนวนอน */
+    justify-content: flex-start !important;
+    background-color: #0f172a !important;
+    overflow-x: hidden !important;
 }
 
-/* 2. ทำให้ Header ยืดเต็มความกว้างหน้าจอแท้ๆ ของโทรศัพท์ 100% */
+/* 2. จัดแถบ Header ให้ยืดเต็มจอ แต่เนื้อหาด้านในไม่เบี้ยว */
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background: rgba(5, 5, 10, 0.9);
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 15px 20px !important;
+    background: rgba(5, 5, 10, 0.9) !important;
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 100;
-    width: 100%;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
 }
 
-/* 3. กล่อง Container หลัก: ปลดล็อคความกว้าง ให้ขยายเต็มจอสวยๆ (เว้นขอบข้างนิดหน่อยให้ดูไม่ติดขอบจอ) */
+/* 3. ล็อคกล่อง Container ให้อยู่กึ่งกลางหน้าจอพอดี (กว้าง 92% ไม่ติดขอบเกินไป) */
 .container {
-    width: 92%;          /* ขยายกว้างเกือบเต็มจอโทรศัพท์แท้ๆ */
-    max-width: none;     /* เอาตัวจำกัดขนาดเดิมออก เพื่อให้มันยืดขยายตามจอได้เต็มที่ */
-    margin: 20px auto;   /* จัดให้อยู่กึ่งกลางซ้าย-ขวาอัตโนมัติ */
-    display: flex;
-    flex-direction: column;
-    gap: 20px;           /* ระยะห่างระหว่างกล่องบนและกล่องล่าง */
-    box-sizing: border-box;
-}
-
-/* 4. บังคับให้การ์ดและกรอบใหญ่ทุกอันขยายเต็มความกว้างของ Container และอยู่กึ่งกลาง */
-.hero-card, .docs-main-card {
-    width: 100% !important;
+    width: 92% !important;
+    max-width: 480px !important; /* กำหนดความกว้างมาตรฐานมือถือ */
     margin-left: auto !important;
     margin-right: auto !important;
-    box-sizing: border-box;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
 }
 
-/* 5. ฟุตเตอร์ (Footer) วางตำแหน่งปกติให้อยู่ล่างสุดเต็มจอ */
+/* 4. บังคับการ์ดทุกอันให้ขยายเต็ม Container และอยู่ตรงกลางเสมอ */
+.hero-card, .docs-main-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* 5. ฟุตเตอร์จัดกึ่งกลางด้านล่างสุด */
 footer {
-    text-align: center;
-    padding: 30px 20px;
+    width: 100% !important;
+    text-align: center !important;
+    padding: 30px 20px !important;
     color: var(--text-muted);
     font-size: 13px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: auto;
-    width: 100%;
+    margin-top: auto !important;
+    box-sizing: border-box !important;
 }
