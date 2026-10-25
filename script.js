@@ -199,3 +199,13 @@ async function handleLogin() {
     }
 }
 
+
+
+
+
+
+window.toggleLamp = toggleLamp;
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
