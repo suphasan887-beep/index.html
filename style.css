@@ -424,18 +424,22 @@
 
 
 
-/* 1. ตั้งค่าหน้าเว็บหลัก */
+/* 1. ตั้งค่าพื้นฐานหน้าจอให้จัดกึ่งกลางและยืดหยุ่นเต็มที่ */
 body {
     background-color: #0f172a;
     color: var(--text-main);
     min-height: 100vh;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* จัดทุกอย่างให้อยู่กึ่งกลางหน้าจอแนวนอน */
+    justify-content: flex-start;
     overflow-x: hidden;
     position: relative;
 }
 
-/* 2. ให้ Header กลับมายืดกว้างเต็มหน้าจอด้านบนสุดเหมือนเดิม */
+/* 2. ทำให้ Header ยืดเต็มความกว้างหน้าจอแท้ๆ ของโทรศัพท์ 100% */
 header {
     display: flex;
     justify-content: space-between;
@@ -451,31 +455,32 @@ header {
     box-sizing: border-box;
 }
 
-/* 3. ล็อคขนาดกล่อง Container และบังคับให้อยู่กึ่งกลางหน้าจอ (margin: 0 auto) */
+/* 3. กล่อง Container หลัก: ปลดล็อคความกว้าง ให้ขยายเต็มจอสวยๆ (เว้นขอบข้างนิดหน่อยให้ดูไม่ติดขอบจอ) */
 .container {
-    max-width: 480px;
-    width: 100%;
-    margin: 30px auto; /* คำสั่ง auto ซ้าย-ขวา จะทำให้มันอยู่ตรงกลางเป๊ะๆ ไม่เบี้ยว */
-    padding: 0 15px;
+    width: 92%;          /* ขยายกว้างเกือบเต็มจอโทรศัพท์แท้ๆ */
+    max-width: none;     /* เอาตัวจำกัดขนาดเดิมออก เพื่อให้มันยืดขยายตามจอได้เต็มที่ */
+    margin: 20px auto;   /* จัดให้อยู่กึ่งกลางซ้าย-ขวาอัตโนมัติ */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;           /* ระยะห่างระหว่างกล่องบนและกล่องล่าง */
     box-sizing: border-box;
 }
 
-/* 4. บังคับให้การ์ดและกรอบใหญ่ทุกอันใน Container จัดกึ่งกลางสมบูรณ์ */
+/* 4. บังคับให้การ์ดและกรอบใหญ่ทุกอันขยายเต็มความกว้างของ Container และอยู่กึ่งกลาง */
 .hero-card, .docs-main-card {
-    width: 100%;
+    width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
     box-sizing: border-box;
 }
 
-/* 5. Footer จัดกึ่งกลางด้านล่างสุด */
+/* 5. ฟุตเตอร์ (Footer) วางตำแหน่งปกติให้อยู่ล่างสุดเต็มจอ */
 footer {
     text-align: center;
     padding: 30px 20px;
     color: var(--text-muted);
     font-size: 13px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: 50px;
+    margin-top: auto;
     width: 100%;
 }
-
