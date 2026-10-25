@@ -63,52 +63,61 @@
 
 
 
-    <!-- 📦 กรอบใหญ่คลังฟังก์ชัน (วางต่อท้ายกล่องเดิม) -->
-<div class="hero-card" style="text-align: left; max-height: 480px; overflow-y: auto; padding-right: 10px; margin-top: 20px;">
+<!-- 📦 กรอบใหญ่คลังฟังก์ชัน (ดีไซน์ขอบขาวเน้นชั้นหลัง + แคปซูลขยายร่าง) -->
+<div class="hero-card docs-main-card">
     
-    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 5px; color: #FFF;">
+    <h3 class="docs-main-title">
         <i class="fa-solid fa-list-check" style="color: var(--secondary);"></i> คลังฟังก์ชัน & คู่มือสคริปต์
     </h3>
-    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">
-        กดที่ปุ่มแคปซูลเพื่อดูรายละเอียด (ปุ่มจะเรียงตามขนาดคำ และเลื่อนลงได้เรื่อยๆ)
+    <p class="docs-main-subtext">
+        กดที่แคปซูลเพื่อดูรายละเอียด (ปุ่มจะขยายเด้งออกมา พร้อมตัวอย่างและปุ่มคัดลอก)
     </p>
 
-    <!-- พื้นที่ปุ่มแคปซูล -->
+    <!-- พื้นที่จัดวางหลอดแคปซูล (Flex-Wrap เรียงต่อกัน) -->
     <div id="capsuleContainer" class="capsule-grid-wrapper">
 
-        <!-- 🔹 รายการที่ 1 -->
+        <!-- ======================================================= -->
+        <!-- 📌 ตัวอย่างที่ 1: หลอดแคปซูล (ก๊อปปี้บล็อกนี้ไปเพิ่มอันใหม่ได้เลย) -->
+        <!-- ======================================================= -->
         <div class="expandable-item" data-id="player">
+            <!-- 🔹 ปุ่มหลอดแคปซูลตอนย่อ (แก้ไข ไอคอน และ ชื่อหัวข้อ ตรงนี้) -->
             <button class="capsule-btn" onclick="toggleCard('player')">
-                <span><i class="fa-solid fa-user"></i> Player</span>
+                <i class="fa-solid fa-user"></i>
+                <span>Player</span> <!-- 👈 แก้ชื่อปุ่มแคปซูลตรงนี้ -->
             </button>
+
+            <!-- 🔹 กล่องการ์ดตอนขยายร่าง (แก้ไข รายละเอียด โค้ด เวอร์ชั่น ตรงนี้) -->
             <div class="expanded-card" id="card-player" style="display: none;">
                 <div class="card-header-row">
-                    <span class="card-title">Player & WalkSpeed</span>
-                    <button class="close-card-btn" onclick="toggleCard('player')"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="card-title-group">
+                        <span class="card-title">Player & WalkSpeed</span> <!-- 👈 แก้หัวข้อหลักตรงนี้ -->
+                        <span class="version-badge">v1.0.0</span> <!-- 👈 แก้ / เพิ่ม เวอร์ชันตรงนี้ -->
+                    </div>
+                    <button class="close-card-btn" onclick="toggleCard('player')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
-                <p class="card-desc">คำอธิบาย: ใช้สำหรับปรับแต่งค่าความเร็ว WalkSpeed / JumpPower ของตัวละครผู้เล่น</p>
-                <div class="card-code-box">game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100</div>
-            </div>
-        </div>
 
-        <!-- 🔹 รายการที่ 2 -->
-        <div class="expandable-item" data-id="remote">
-            <button class="capsule-btn" onclick="toggleCard('remote')">
-                <span><i class="fa-solid fa-terminal"></i> การยิง RemoteEvent ออโต้เก็บของ</span>
-            </button>
-            <div class="expanded-card" id="card-remote" style="display: none;">
-                <div class="card-header-row">
-                    <span class="card-title">การยิง RemoteEvent</span>
-                    <button class="close-card-btn" onclick="toggleCard('remote')"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <p class="card-desc">คำอธิบาย: สั่ง FireServer เพื่อเก็บของหรือทำกิจกรรมออโต้</p>
-                <div class="card-code-box">game:GetService("ReplicatedStorage").RemoteEvent:FireServer()</div>
+                <!-- 👈 แก้คำอธิบายการใช้งานตรงนี้ -->
+                <p class="card-desc">
+                    <strong>💡 รายละเอียดการใช้งาน:</strong><br>
+                    ใช้สำหรับปรับแต่งค่าความเร็ว WalkSpeed และ JumpPower ของตัวละครผู้เล่นหลัก
+                </p>
+
+                <!-- 👈 แก้ตัวอย่างโค้ด Lua ตรงนี้ -->
+                <div class="code-header">💻 ตัวอย่างโค้ดการใช้งาน:</div>
+                <div class="card-code-box" id="code-player">game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100</div>
+
+                <!-- ปุ่มคัดลอกโค้ด -->
+                <button class="copy-code-btn" onclick="copySnippet('code-player', this)">
+                    <i class="fa-solid fa-copy"></i> คัดลอกโค้ดตัวอย่าง
+                </button>
             </div>
         </div>
+        <!-- ==================== จบตัวอย่างที่ 1 ==================== -->
+
+
+        <!-- ✍️ [จุดสำหรับเพิ่มฟังก์ชันใหม่]: ก๊อปปี้โครงสร้าง expandable-item ด้านบนมาแปะตรงนี้แล้วเปลี่ยน data-id และ id ให้ไม่ซ้ำกัน -->
 
     </div>
 </div>
-    
-
-</body>
-</html>
