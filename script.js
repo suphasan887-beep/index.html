@@ -86,7 +86,7 @@ function copySnippet(elementId, btnElement) {
 
 
 // 1. เชื่อมต่อกับโปรเจกต์ Supabase ของคุณ (นำ URL และ Anon Key จากหน้าเว็บ Supabase มาใส่)
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // ตัวอย่าง: 'https://xxxxx.supabase.co'
+const SUPABASE_URL = 'YOUR_SUPABASE_URL'https://ztkqtvdllpzjsvlqxzni.supabase.co; // ตัวอย่าง: 'https://xxxxx.supabase.co'
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t; // คีย์สาธารณะ (Anon Key) จาก Supabase
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
