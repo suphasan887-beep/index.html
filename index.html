@@ -202,33 +202,7 @@
 
                 <!-- 👈 แก้ตัวอย่างโค้ด Lua ตรงนี้ -->
                 <div class="code-header">💻 ตัวอย่างโค้ดการใช้งาน:</div>
-                <div class="card-code-box" id="code-player">-- =================================================================
--- อธิบายความหมายและการใช้งาน: Player คืออะไร?
--- =================================================================
--- Player หมายถึง "ตัวผู้เล่น" หรือบัญชีผู้ใช้ที่กำลังเข้ามาร่วมเล่นอยู่ในเกมนั้นๆ 
--- โดยในฝั่ง Script (Client) เราจะใช้คำสั่งเพื่ออ้างอิงถึง "ตัวเราเอง" 
--- หรือใช้ดึงข้อมูลส่วนตัว เช่น ชื่อผู้เล่น, ไอดี, หรือทีมที่สังกัด
-
-local Players = game:GetService("Players")
-
--- 1. การอ้างอิงหาตัวผู้เล่นที่เป็น "ตัวเราเอง"
-local localPlayer = Players.LocalPlayer 
-
--- ตัวอย่างการใช้งานในสถานการณ์จริง:
--- ใช้เมื่อต้องการดึงข้อมูลเบื้องต้นของผู้เล่น
-print("ชื่อในเกมของคุณคือ: " .. localPlayer.Name)
-print("รหัสไอดี (UserId) ของคุณคือ: " .. localPlayer.UserId)
-
--- 2. การใช้งานในสถานการณ์: ต้องการเช็คว่าตัวละครของผู้เล่นโหลดเสร็จหรือยัง
--- (มีประโยชน์มากเวลาจะเขียนสคริปต์ไม่ให้มัน Error ตอนเกมกำลังโหลดเข้าแมพ)
-local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-print("ตัวละครของผู้เล่นโหลดเสร็จสมบูรณ์แล้ว!")
-
--- 3. การใช้งานในสถานการณ์: การวนลูปหาผู้เล่นทุกคนที่อยู่ในเซิร์ฟเวอร์ (ใช้ฝั่ง Server)
--- for _, player in ipairs(Players:GetPlayers()) do
---     print("ผู้เล่นที่อยู่ในเซิร์ฟเวอร์ตอนนี้: " .. player.Name)
--- end
-                </div>
+                <div class="card-code-box" id="code-player"></div>
 
                 <!-- ปุ่มคัดลอกโค้ด -->
                 <button class="copy-code-btn" onclick="copySnippet('code-player', this)">
@@ -273,17 +247,7 @@ print("ตัวละครของผู้เล่นโหลดเสร�
 
                 <!-- 👈 แก้ตัวอย่างโค้ด Lua ตรงนี้ -->
                 <div class="code-header">💻 ตัวอย่างโค้ดการใช้งาน:</div>
-                <div class="card-code-box" id="code-pcall(function()">-- ครอบ pcall เพื่อกันสคริปต์พังถ้าหาของในแมพไม่เจอ
-local success, result = pcall(function()
-    return game.Workspace.PartName
-end)
-
-if success then
-    print("ทำงานสำเร็จ เจอของ:", result)
-else
-    print("เกิด Error แต่สคริปต์ไม่หยุดทำงาน:", result)
-end
-                </div>
+                <div class="card-code-box" id="code-pcall(function()"></div>
 
                 <!-- ปุ่มคัดลอกโค้ด -->
                 <button class="copy-code-btn" onclick="copySnippet('code-pcall(function()', this)">
