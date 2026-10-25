@@ -14,6 +14,95 @@
 </head>
 <body>
 
+
+    <!-- 📌 วาง Pop-up ไว้ตรงนี้เป็นตัวแรกสุดใต้ body ทันที -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[99999] flex items-center justify-center p-4 transition-all duration-300 opacity-0 pointer-events-none">
+        
+        <!-- ปุ่มปิด (X) -->
+        <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl font-bold z-50">✕</button>
+
+        <!-- แสงโคมไฟ -->
+        <div id="lamp-light" class="lamp-glow absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-amber-100/20 rounded-full blur-[120px] pointer-events-none opacity-0 z-0"></div>
+
+        <!-- สายโคมไฟ -->
+        <div onclick="toggleLamp()" class="pull-string absolute top-0 right-10 sm:right-20 z-50 cursor-pointer flex flex-col items-center group">
+            <div class="w-1 h-32 sm:h-40 bg-gradient-to-b from-slate-700 via-slate-400 to-amber-200/80 shadow-md"></div>
+            <div id="lamp-knob" class="w-6 h-9 bg-amber-400 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 transition duration-200 flex items-center justify-center">
+                <div class="w-1.5 h-1.5 bg-slate-900 rounded-full"></div>
+            </div>
+            <span id="lamp-hint" class="text-[10px] uppercase tracking-widest text-amber-300 font-bold mt-2 bg-slate-900/80 px-2 py-0.5 rounded-full border border-amber-400/30">ดึงสายไฟ</span>
+        </div>
+
+        <!-- กล่องการ์ดฟอร์ม -->
+        <div class="relative w-full max-w-sm h-[520px] z-10">
+            
+            <!-- หน้าเข้าสู่ระบบ (Dark) -->
+            <div id="login-card" class="glass-card glass-dark absolute inset-0 rounded-3xl p-6 flex flex-col justify-center space-y-4 text-white z-20">
+                <div class="text-center space-y-1">
+                    <span class="text-[10px] font-bold tracking-widest uppercase text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">🌙 DARK MODE</span>
+                    <h2 class="text-2xl font-extrabold text-indigo-300 mt-2">เข้าสู่ระบบ</h2>
+                    <p class="text-slate-400 text-xs">ยินดีต้อนรับกลับสู่ระบบกิจกรรม</p>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs uppercase text-slate-400 font-semibold mb-1">อีเมล</label>
+                        <input type="email" id="login-email" placeholder="example@email.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase text-slate-400 font-semibold mb-1">รหัสผ่าน</label>
+                        <input type="password" id="login-password" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-400">
+                    </div>
+                </div>
+                <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold text-sm shadow-lg shadow-indigo-600/40 transition active:scale-95">เข้าสู่ระบบ</button>
+                <div class="text-center pt-2">
+                    <p class="text-xs text-slate-400">อยากสมัครสมาชิก? <span onclick="toggleLamp()" class="text-amber-300 font-bold underline cursor-pointer">ดึงสายไฟข้างบน 💡</span></p>
+                </div>
+            </div>
+
+            <!-- หน้าสมัครสมาชิก (Light) -->
+            <div id="register-card" class="glass-card glass-light absolute inset-0 rounded-3xl p-6 flex flex-col justify-center space-y-3 text-slate-900 opacity-0 pointer-events-none scale-95 z-10">
+                <div class="text-center space-y-1">
+                    <span class="text-[10px] font-bold tracking-widest uppercase text-amber-900 bg-amber-400/30 px-3 py-1 rounded-full border border-amber-400/40">💡 LIGHT MODE</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900 mt-1">สมัครสมาชิก</h2>
+                    <p class="text-slate-700 text-xs font-medium">สร้างบัญชีใหม่เพื่อร่วมสนุก</p>
+                </div>
+                <div class="space-y-2">
+                    <div>
+                        <label class="block text-[11px] uppercase text-slate-800 font-bold mb-0.5">ชื่อผู้ใช้งาน (Username)</label>
+                        <input type="text" id="reg-username" placeholder="Roblox Username" class="w-full px-3 py-2 rounded-xl bg-white/70 border border-white/60 text-xs text-slate-900 focus:outline-none focus:border-amber-500 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase text-slate-800 font-bold mb-0.5">อีเมล</label>
+                        <input type="email" id="reg-email" placeholder="example@email.com" class="w-full px-3 py-2 rounded-xl bg-white/70 border border-white/60 text-xs text-slate-900 focus:outline-none focus:border-amber-500 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase text-slate-800 font-bold mb-0.5">รหัสผ่าน</label>
+                        <input type="password" id="reg-password" placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-white/70 border border-white/60 text-xs text-slate-900 focus:outline-none focus:border-amber-500 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase text-slate-800 font-bold mb-0.5">ยืนยันรหัสผ่านอีกครั้ง</label>
+                        <input type="password" id="reg-confirm-password" placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-white/70 border border-white/60 text-xs text-slate-900 focus:outline-none focus:border-amber-500 font-medium">
+                    </div>
+                </div>
+                <button onclick="handleRegister()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-bold text-xs shadow-lg shadow-amber-500/30 transition active:scale-95">ยืนยันการสมัครสมาชิก</button>
+                <div class="text-center pt-1">
+                    <p class="text-xs text-slate-800 font-medium">มีบัญชีอยู่แล้ว? <span onclick="toggleLamp()" class="text-indigo-900 font-bold underline cursor-pointer">ดึงสายไฟปิดไฟ 🌙</span></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- โครงสร้างเนื้อหาเว็บหลักเดิมของคุณต่อจากนี้ตามปกติ -->
+    
+
+
+
+
+
+
+    
+
     <div class="bg-glow"></div>
     <div class="bg-glow-2"></div>
 
