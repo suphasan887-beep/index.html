@@ -1,0 +1,351 @@
+:root {
+    --bg-color: #05050a;
+    --primary: #9333ea;
+    --secondary: #06b6d4;
+    --accent: #ec4899;
+    --card-bg: rgba(15, 15, 30, 0.75);
+    --border-color: rgba(147, 51, 234, 0.3);
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Prompt', sans-serif;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: #0f172a;
+    color: var(--text-main);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Background Image Glow */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://i.ibb.co/3YpWxb5J/FB-IMG-1787390135699.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 0.15;
+    z-index: -1;
+}
+
+.bg-glow {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(147,51,234,0.15) 0%, rgba(0,0,0,0) 70%);
+    top: -100px;
+    left: -100px;
+    z-index: -1;
+}
+
+.bg-glow-2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, rgba(0,0,0,0) 70%);
+    bottom: -100px;
+    right: -100px;
+    z-index: -1;
+}
+
+/* Header Navbar */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(5, 5, 10, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    box-shadow: 0 0 15px rgba(147, 51, 234, 0.5);
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #fff, var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.btn-discord {
+    background: #5865F2;
+    box-shadow: 0 0 10px rgba(88, 101, 242, 0.4);
+}
+
+.btn-youtube {
+    background: #FF0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+}
+
+/* Main Container */
+.container {
+    max-width: 480px;
+    margin: 30px auto !important;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Hero Cards Base */
+.hero-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 25px 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.script-loader-card {
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.card-heading {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #FFF;
+}
+
+#brandNewScriptBox {
+    width: 100%;
+    height: 100px;
+    background: #111;
+    color: #00ff88;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    box-sizing: border-box;
+    resize: none;
+    margin-bottom: 12px;
+}
+
+.btn-fetch {
+    width: 100%;
+    padding: 12px;
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-fetch:hover {
+    background: #6d28d9;
+}
+
+/* Docs Scroll Card */
+.docs-scroll-card {
+    text-align: left;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.card-heading-left {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #FFF;
+}
+
+.icon-secondary {
+    color: var(--secondary);
+}
+
+.card-subtext {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+/* 💊 Capsule Grid Wrapper (Flex-Wrap) */
+.capsule-grid-wrapper {
+    display: flex;
+    flex-wrap: wrap; /* ชนขอบตกบรรทัดใหม่ */
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.expandable-item {
+    display: inline-block;
+}
+
+.expandable-item.active {
+    width: 100%;
+}
+
+.capsule-btn {
+    width: fit-content;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(6, 182, 212, 0.25));
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    padding: 8px 16px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.capsule-btn:hover {
+    border-color: var(--secondary);
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.45), rgba(6, 182, 212, 0.45));
+    transform: translateY(-2px);
+}
+
+/* Expanded Card Styling */
+.expanded-card {
+    width: 100%;
+    background: rgba(10, 10, 20, 0.95);
+    border: 1px solid var(--secondary);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
+    animation: fadeInCard 0.3s ease;
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 8px;
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--secondary);
+}
+
+.close-card-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.close-card-btn:hover {
+    background: #ef4444;
+}
+
+.card-desc {
+    font-size: 12px;
+    color: #d1d5db;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.card-code-box {
+    background: #05050a;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 11px;
+    color: #00ff88;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+@keyframes fadeInCard {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 50px;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+  }
+  
