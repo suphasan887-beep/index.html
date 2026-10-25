@@ -177,7 +177,17 @@ print("ตัวละครของผู้เล่นโหลดเสร�
 
                 <!-- 👈 แก้ตัวอย่างโค้ด Lua ตรงนี้ -->
                 <div class="code-header">💻 ตัวอย่างโค้ดการใช้งาน:</div>
-                <div class="card-code-box" id="code-player"></div>
+                <div class="card-code-box" id="code-pcall(function()">-- ครอบ pcall เพื่อกันสคริปต์พังถ้าหาของในแมพไม่เจอ
+local success, result = pcall(function()
+    return game.Workspace.PartName
+end)
+
+if success then
+    print("ทำงานสำเร็จ เจอของ:", result)
+else
+    print("เกิด Error แต่สคริปต์ไม่หยุดทำงาน:", result)
+end
+                </div>
 
                 <!-- ปุ่มคัดลอกโค้ด -->
                 <button class="copy-code-btn" onclick="copySnippet('code-pcall(function()', this)">
