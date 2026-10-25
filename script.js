@@ -95,118 +95,13 @@ function copySnippet(elementId, btnElement) {
 
 const SUPABASE_URL = 'https://ztkqtvdllpzjsvlqxzni.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-let isLampOn = false;
-
-function openAuthModal() {
-    const modal = document.getElementById('auth-modal');
-    if (modal) {
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100', 'pointer-events-auto');
-    }
+// ตั้งชื่อ sb (ห้ามใช้ชื่อ supabase เพราะชนกับตัวแปรของไลบรารี)
+let sb = null;
+try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch (err) {
+    console.error("❌ โหลด Supabase ไม่สำเร็จ (เช็คว่าใส่ <script> ของ supabase-js ใน HTML แล้ว):", err);
 }
-
-function closeAuthModal() {
-    const modal = document.getElementById('auth-modal');
-    if (modal) {
-        modal.classList.remove('opacity-100', 'pointer-events-auto');
-        modal.classList.add('opacity-0', 'pointer-events-none');
-    }
-}
-
-function toggleLamp() {
-    isLampOn = !isLampOn;
-    const lampLight = document.getElementById('lamp-light');
-    const lampKnob = document.getElementById('lamp-knob');
-    const lampHint = document.getElementById('lamp-hint');
-    const loginCard = document.getElementById('login-card');
-    const regCard = document.getElementById('register-card');
-
-    if (!lampLight || !loginCard || !regCard) return;
-
-    if (isLampOn) {
-        lampLight.classList.remove('opacity-0');
-        lampLight.classList.add('opacity-100');
-        if(lampKnob) lampKnob.className = 'w-6 h-9 bg-amber-200 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 flex items-center justify-center';
-        if(lampHint) lampHint.innerText = 'ดึงเพื่อปิดไฟ';
-
-        loginCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-        loginCard.classList.remove('z-20');
-
-        regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-        regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
-    } else {
-        lampLight.classList.remove('opacity-100');
-        lampLight.classList.add('opacity-0');
-        if(lampKnob) lampKnob.className = 'w-6 h-9 bg-amber-400 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 flex items-center justify-center';
-        if(lampHint) lampHint.innerText = 'ดึงสายไฟ';
-
-        regCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-        regCard.classList.remove('z-20');
-
-        loginCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-        loginCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
-    }
-}
-
-async function handleRegister() {
-    const username = document.getElementById('reg-username')?.value.trim();
-    const email = document.getElementById('reg-email')?.value.trim();
-    const password = document.getElementById('reg-password')?.value;
-    const confirmPassword = document.getElementById('reg-confirm-password')?.value;
-
-    if (!username || !email || !password || !confirmPassword) {
-        alert('กรุณากรอกข้อมูลให้ครบทุกช่อง!');
-        return;
-    }
-    if (password !== confirmPassword) {
-        alert('รหัสผ่านไม่ตรงกัน!');
-        return;
-    }
-
-    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
-    if (authError) {
-        alert('สมัครไม่สำเร็จ: ' + authError.message);
-        return;
-    }
-
-    const userId = authData.user.id;
-    const { error: profileError } = await supabase.from('profiles').insert([{ id: userId, username }]);
-    if (profileError) {
-        alert('บันทึกชื่อผู้ใช้ไม่สำเร็จ: ' + profileError.message);
-    } else {
-        alert('สมัครสมาชิกสำเร็จ! กรุณายืนยันอีเมล');
-        toggleLamp();
-    }
-}
-
-async function handleLogin() {
-    const email = document.getElementById('login-email')?.value.trim();
-    const password = document.getElementById('login-password')?.value;
-
-    if (!email || !password) {
-        alert('กรุณากรอกอีเมลและรหัสผ่าน!');
-        return;
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-        alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message);
-    } else {
-        alert('เข้าสู่ระบบสำเร็จ!');
-        closeAuthModal();
-    }
-}
-
-
-
-
-
-
-const SUPABASE_URL = 'https://ztkqtvdllpzjsvlqxzni.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let isLampOn = false;
 
@@ -305,14 +200,16 @@ async function handleRegister() {
             return;
         }
 
-        const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+        if (!sb) { alert('ระบบสมาชิกยังไม่พร้อม (โหลด Supabase ไม่สำเร็จ)'); return; }
+        const { data: authData, error: authError } = await sb.auth.signUp({ email, password });
         if (authError) {
             alert('สมัครไม่สำเร็จ (Supabase Auth Error): ' + authError.message);
             return;
         }
 
-        const userId = authData.user.id;
-        const { error: profileError } = await supabase.from('profiles').insert([{ id: userId, username }]);
+        const userId = authData.user && authData.user.id;
+        if (!userId) { alert('สมัครไม่สำเร็จ: ไม่ได้รับ user id'); return; }
+        const { error: profileError } = await sb.from('profiles').insert([{ id: userId, username }]);
         if (profileError) {
             alert('บันทึกชื่อผู้ใช้ไม่สำเร็จ (Database Error): ' + profileError.message);
         } else {
@@ -335,7 +232,8 @@ async function handleLogin() {
             return;
         }
 
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (!sb) { alert('ระบบสมาชิกยังไม่พร้อม (โหลด Supabase ไม่สำเร็จ)'); return; }
+        const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) {
             alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message);
         } else {
