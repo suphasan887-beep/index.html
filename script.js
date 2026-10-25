@@ -95,154 +95,147 @@ function copySnippet(elementId, btnElement) {
 
 const SUPABASE_URL = 'https://ztkqtvdllpzjsvlqxzni.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t';
-// ตั้งชื่อ sb (ห้ามใช้ชื่อ supabase เพราะชนกับตัวแปรของไลบรารี)
-let sb = null;
+
+let supabase = null;
 try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    if (window.supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 } catch (err) {
-    console.error("❌ โหลด Supabase ไม่สำเร็จ (เช็คว่าใส่ <script> ของ supabase-js ใน HTML แล้ว):", err);
+    console.error("Supabase Init Error:", err);
 }
 
 let isLampOn = false;
 
+// เปิดหน้าต่าง Modal ล็อกอิน
 function openAuthModal() {
-    try {
-        const modal = document.getElementById('auth-modal');
-        if (!modal) {
-            console.error("❌ Error: หา element ID 'auth-modal' ไม่พบใน HTML!");
-            alert("Error: หา modal ไม่เจอ เช็คไอดี auth-modal ใน HTML ด่วน");
-            return;
-        }
-        modal.classList.remove('opacity-0', 'pointer-events-none');
-        modal.classList.add('opacity-100', 'pointer-events-auto');
-    } catch (err) {
-        console.error("❌ openAuthModal พัง:", err);
-        alert("openAuthModal Error: " + err.message);
+    const modal = document.getElementById('auth-modal');
+    if (!modal) {
+        alert("ไม่พบ ID auth-modal ในหน้า HTML");
+        return;
     }
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100', 'pointer-events-auto');
 }
 
+// ปิดหน้าต่าง Modal ล็อกอิน (แก้ปัญหาคลิกทะลุหลังปิด)
 function closeAuthModal() {
-    try {
-        const modal = document.getElementById('auth-modal');
-        if (!modal) return;
-        modal.classList.remove('opacity-100', 'pointer-events-auto');
-        modal.classList.add('opacity-0', 'pointer-events-none');
-    } catch (err) {
-        console.error("❌ closeAuthModal พัง:", err);
-    }
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
 }
 
+// ฟังก์ชันดึงสายไฟสลับโหมด Login / Register
 function toggleLamp() {
-    try {
-        isLampOn = !isLampOn;
-        const lampLight = document.getElementById('lamp-light');
-        const lampKnob = document.getElementById('lamp-knob');
-        const lampHint = document.getElementById('lamp-hint');
-        const loginCard = document.getElementById('login-card');
-        const regCard = document.getElementById('register-card');
+    isLampOn = !isLampOn;
+    const lampLight = document.getElementById('lamp-light');
+    const lampKnob = document.getElementById('lamp-knob');
+    const lampHint = document.getElementById('lamp-hint');
+    const loginCard = document.getElementById('login-card');
+    const regCard = document.getElementById('register-card');
 
-        // เช็คตัวแปรทีละตัวว่าอันไหนหาไม่เจอ จะได้ฟ้องชัดเจน
-        if (!lampLight) console.warn("⚠️ เตือน: หา id='lamp-light' ไม่พบ");
-        if (!loginCard) console.warn("⚠️ เตือน: หา id='login-card' ไม่พบ");
-        if (!regCard) console.warn("⚠️ เตือน: หา id='register-card' ไม่พบ");
+    if (!loginCard || !regCard) {
+        alert("ไม่พบการ์ด Login หรือ Register ในหน้า HTML");
+        return;
+    }
 
-        if (!loginCard || !regCard) {
-            alert("Error: การ์ด Login หรือ Register หายไปจากหน้าเว็บ!");
-            return;
+    if (isLampOn) {
+        if (lampLight) {
+            lampLight.classList.remove('opacity-0');
+            lampLight.classList.add('opacity-100');
         }
-
-        if (isLampOn) {
-            if (lampLight) {
-                lampLight.classList.remove('opacity-0');
-                lampLight.classList.add('opacity-100');
-            }
-            if (lampKnob) lampKnob.className = 'w-6 h-9 bg-amber-200 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 flex items-center justify-center';
-            if (lampHint) lampHint.innerText = 'ดึงเพื่อปิดไฟ';
-
-            loginCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-            loginCard.classList.remove('z-20');
-
-            regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-            regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
-        } else {
-            if (lampLight) {
-                lampLight.classList.remove('opacity-100');
-                lampLight.classList.add('opacity-0');
-            }
-            if (lampKnob) lampKnob.className = 'w-6 h-9 bg-amber-400 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 flex items-center justify-center';
-            if (lampHint) lampHint.innerText = 'ดึงสายไฟ';
-
-            regCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-            regCard.classList.remove('z-20');
-
-            loginCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
-            loginCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+        if (lampKnob) {
+            lampKnob.className = 'w-6 h-9 bg-amber-200 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 flex items-center justify-center';
         }
-    } catch (err) {
-        console.error("❌ toggleLamp พัง:", err);
-        alert("เกิดข้อผิดพลาดที่ฟังก์ชันดึงสายไฟ: " + err.message);
+        if (lampHint) lampHint.innerText = 'ดึงเพื่อปิดไฟ';
+
+        loginCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+        loginCard.classList.remove('z-20');
+
+        regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+        regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+    } else {
+        if (lampLight) {
+            lampLight.classList.remove('opacity-100');
+            lampLight.classList.add('opacity-0');
+        }
+        if (lampKnob) {
+            lampKnob.className = 'w-6 h-9 bg-amber-400 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 flex items-center justify-center';
+        }
+        if (lampHint) lampHint.innerText = 'ดึงสายไฟ';
+
+        regCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+        regCard.classList.remove('z-20');
+
+        loginCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+        loginCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
     }
 }
 
+// ฟังก์ชันสมัครสมาชิกผ่าน Supabase
 async function handleRegister() {
+    if (!supabase) {
+        alert("ระบบ Supabase ยังไม่พร้อมใช้งาน");
+        return;
+    }
+    const username = document.getElementById('reg-username')?.value.trim();
+    const email = document.getElementById('reg-email')?.value.trim();
+    const password = document.getElementById('reg-password')?.value;
+    const confirmPassword = document.getElementById('reg-confirm-password')?.value;
+
+    if (!username || !email || !password || !confirmPassword) {
+        alert('กรุณากรอกข้อมูลให้ครบทุกช่อง!');
+        return;
+    }
+    if (password !== confirmPassword) {
+        alert('รหัสผ่านไม่ตรงกัน!');
+        return;
+    }
+
     try {
-        const username = document.getElementById('reg-username')?.value.trim();
-        const email = document.getElementById('reg-email')?.value.trim();
-        const password = document.getElementById('reg-password')?.value;
-        const confirmPassword = document.getElementById('reg-confirm-password')?.value;
-
-        if (!username || !email || !password || !confirmPassword) {
-            alert('กรุณากรอกข้อมูลให้ครบทุกช่อง!');
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+            alert('สมัครไม่สำเร็จ: ' + error.message);
             return;
         }
-        if (password !== confirmPassword) {
-            alert('รหัสผ่านไม่ตรงกัน!');
-            return;
-        }
-
-        if (!sb) { alert('ระบบสมาชิกยังไม่พร้อม (โหลด Supabase ไม่สำเร็จ)'); return; }
-        const { data: authData, error: authError } = await sb.auth.signUp({ email, password });
-        if (authError) {
-            alert('สมัครไม่สำเร็จ (Supabase Auth Error): ' + authError.message);
-            return;
-        }
-
-        const userId = authData.user && authData.user.id;
-        if (!userId) { alert('สมัครไม่สำเร็จ: ไม่ได้รับ user id'); return; }
-        const { error: profileError } = await sb.from('profiles').insert([{ id: userId, username }]);
-        if (profileError) {
-            alert('บันทึกชื่อผู้ใช้ไม่สำเร็จ (Database Error): ' + profileError.message);
-        } else {
-            alert('สมัครสมาชิกสำเร็จ! กรุณายืนยันอีเมล');
-            toggleLamp();
-        }
+        alert('สมัครสมาชิกสำเร็จ!');
+        toggleLamp();
     } catch (err) {
-        console.error("❌ handleRegister พัง:", err);
-        alert("ระบบสมัครสมาชิกขัดข้อง: " + err.message);
+        alert('เกิดข้อผิดพลาด: ' + err.message);
     }
 }
 
+// ฟังก์ชันเข้าสู่ระบบผ่าน Supabase
 async function handleLogin() {
+    if (!supabase) {
+        alert("ระบบ Supabase ยังไม่พร้อมใช้งาน");
+        return;
+    }
+    const email = document.getElementById('login-email')?.value.trim();
+    const password = document.getElementById('login-password')?.value;
+
+    if (!email || !password) {
+        alert('กรุณากรอกอีเมลและรหัสผ่าน!');
+        return;
+    }
+
     try {
-        const email = document.getElementById('login-email')?.value.trim();
-        const password = document.getElementById('login-password')?.value;
-
-        if (!email || !password) {
-            alert('กรุณากรอกอีเมลและรหัสผ่าน!');
-            return;
-        }
-
-        if (!sb) { alert('ระบบสมาชิกยังไม่พร้อม (โหลด Supabase ไม่สำเร็จ)'); return; }
-        const { error } = await sb.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
             alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message);
-        } else {
-            alert('เข้าสู่ระบบสำเร็จ!');
-            closeAuthModal();
+            return;
         }
+        alert('เข้าสู่ระบบสำเร็จ!');
+        closeAuthModal();
     } catch (err) {
-        console.error("❌ handleLogin พัง:", err);
-        alert("ระบบเข้าสู่ระบบขัดข้อง: " + err.message);
+        alert('เกิดข้อผิดพลาด: ' + err.message);
     }
 }
 
+// ผูกฟังก์ชันเข้ากับ window
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.toggleLamp = toggleLamp;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
