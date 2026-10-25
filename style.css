@@ -550,3 +550,39 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     margin-top: auto;
 }
+
+
+
+/* ตั้งค่าความนุ่มนวลในการเปลี่ยนสีและแสงไฟ */
+.glass-card {
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* กระจกเคลือบเข้ม (ไฟปิด - DARK TINTED GLASS) */
+.glass-dark {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* กระจกเคลือบใสสว่าง (ไฟเปิด - LIGHT FROSTED GLASS) */
+.glass-light {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 50px rgba(255, 255, 255, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+/* สายโคมไฟ (Pull String Switch Animation) */
+.pull-string {
+    transition: transform 0.2s ease-in-out;
+}
+.pull-string:active {
+    transform: translateY(20px);
+}
+
+/* แสงไฟสว่างวาบตอนเปิดไฟ */
+.lamp-glow {
+    transition: opacity 0.8s ease-in-out;
+}
