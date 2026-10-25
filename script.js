@@ -79,3 +79,60 @@ function copySnippet(elementId, btnElement) {
         console.error("คัดลอกไม่สำเร็จ:", err);
     });
 }
+
+
+
+
+
+
+let isLampOn = false;
+
+function toggleLamp() {
+    isLampOn = !isLampOn;
+
+    const mainBg = document.getElementById('main-bg');
+    const lampLight = document.getElementById('lamp-light');
+    const lampKnob = document.getElementById('lamp-knob');
+    const lampHint = document.getElementById('lamp-hint');
+    const loginCard = document.getElementById('login-card');
+    const regCard = document.getElementById('register-card');
+
+    if (isLampOn) {
+        // 💡 สถานะเปิดไฟ (เปลี่ยนเป็นโหมดสมัครสมาชิก - กระจกใสสว่าง)
+        mainBg.classList.remove('bg-slate-950');
+        mainBg.classList.add('bg-slate-900');
+        lampLight.classList.remove('opacity-0');
+        lampLight.classList.add('opacity-100');
+        
+        lampKnob.classList.remove('bg-amber-400');
+        lampKnob.classList.add('bg-amber-200');
+        lampHint.innerText = 'ดึงเพื่อปิดไฟ';
+
+        // ซ่อนหน้า Login สลับให้หน้า Register ขึ้นมาแทน
+        loginCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        loginCard.classList.remove('z-20');
+        loginCard.classList.add('z-10');
+
+        regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+        regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+
+    } else {
+        // 🌙 สถานะปิดไฟ (เปลี่ยนเป็นโหมดเข้าสู่ระบบ - กระจกเข้ม)
+        mainBg.classList.remove('bg-slate-900');
+        mainBg.classList.add('bg-slate-950');
+        lampLight.classList.remove('opacity-100');
+        lampLight.classList.add('opacity-0');
+
+        lampKnob.classList.remove('bg-amber-200');
+        lampKnob.classList.add('bg-amber-400');
+        lampHint.innerText = 'ดึงสายไฟ';
+
+        // ซ่อนหน้า Register สลับให้หน้า Login ขึ้นมาแทน
+        regCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        regCard.classList.remove('z-20');
+        regCard.classList.add('z-10');
+
+        loginCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+        loginCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+    }
+}
