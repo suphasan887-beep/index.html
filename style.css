@@ -424,12 +424,8 @@
 
 
 
-
-/* 1. บังคับให้โครงสร้างหลักของหน้าเว็บจัดกึ่งกลางทั้งหมด */
+/* 1. ตั้งค่าหน้าเว็บหลัก */
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* จัดทุกบล็อกให้อยู่กึ่งกลางแนวนอนของจอ */
     background-color: #0f172a;
     color: var(--text-main);
     min-height: 100vh;
@@ -439,39 +435,47 @@ body {
     position: relative;
 }
 
-/* 2. บังคับให้ Header, Container และ Footer มีขนาดกว้างสูงสุดเท่ากัน (480px) */
-header, .container, footer {
-    width: 100%;
-    max-width: 480px; /* ล็อคความกว้างให้เท่ากันทั้งเว็บ */
-    box-sizing: border-box;
-}
-
-/* 3. ปรับแต่ง Header ให้รับกับความกว้าง 480px และดูสวยงามขึ้น */
+/* 2. ให้ Header กลับมายืดกว้างเต็มหน้าจอด้านบนสุดเหมือนเดิม */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background: rgba(5, 5, 10, 0.85);
+    padding: 15px 5%;
+    background: rgba(5, 5, 10, 0.9);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 100;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* 4. จัดระยะห่าง Container ตรงกลาง */
+/* 3. ล็อคขนาดกล่อง Container และบังคับให้อยู่กึ่งกลางหน้าจอ (margin: 0 auto) */
 .container {
-    margin: 20px auto;
+    max-width: 480px;
+    width: 100%;
+    margin: 30px auto; /* คำสั่ง auto ซ้าย-ขวา จะทำให้มันอยู่ตรงกลางเป๊ะๆ ไม่เบี้ยว */
     padding: 0 15px;
+    box-sizing: border-box;
 }
 
-/* 5. จัด Footer ให้อยู่ตรงกลางตามขนาดเว็บ */
+/* 4. บังคับให้การ์ดและกรอบใหญ่ทุกอันใน Container จัดกึ่งกลางสมบูรณ์ */
+.hero-card, .docs-main-card {
+    width: 100%;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
+}
+
+/* 5. Footer จัดกึ่งกลางด้านล่างสุด */
 footer {
     text-align: center;
     padding: 30px 20px;
     color: var(--text-muted);
     font-size: 13px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: auto;
+    margin-top: 50px;
+    width: 100%;
 }
+
