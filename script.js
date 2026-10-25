@@ -348,9 +348,3 @@ async function handleLogin() {
     }
 }
 
-// ผูกค่าเข้า window เพื่อให้ปุ่มใน HTML กดเรียกใช้งานได้ชัวร์ 100% บนมือถือ
-window.openAuthModal = openAuthModal;
-window.closeAuthModal = closeAuthModal;
-window.toggleLamp = toggleLamp;
-window.handleLogin = handleLogin;
-window.handleRegister = handleRegister;
