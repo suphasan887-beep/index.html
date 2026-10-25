@@ -143,6 +143,51 @@ print("ตัวละครของผู้เล่นโหลดเสร�
         <!-- ==================== จบตัวอย่างที่ 1 ==================== -->
 
 
+
+
+
+
+        <!-- ======================================================= -->
+        <!-- 📌 ตัวอย่างที่ 1: หลอดแคปซูล (ก๊อปปี้บล็อกนี้ไปเพิ่มอันใหม่ได้เลย) -->
+        <!-- ======================================================= -->
+        <div class="expandable-item" data-id="pcall(function()">
+            <!-- 🔹 ปุ่มหลอดแคปซูลตอนย่อ (แก้ไข ไอคอน และ ชื่อหัวข้อ ตรงนี้) -->
+            <button class="capsule-btn" onclick="toggleCard('pcall(function()')">
+                <i class="fa-solid fa-user"></i>
+                <span>pcall(function()</span> <!-- 👈 แก้ชื่อปุ่มแคปซูลตรงนี้ -->
+            </button>
+
+            <!-- 🔹 กล่องการ์ดตอนขยายร่าง (แก้ไข รายละเอียด โค้ด เวอร์ชั่น ตรงนี้) -->
+            <div class="expanded-card" id="card-pcall(function()" style="display: none;">
+                <div class="card-header-row">
+                    <div class="card-title-group">
+                        <span class="card-title">pcall(function()</span> <!-- 👈 แก้หัวข้อหลักตรงนี้ -->
+                        <span class="version-badge">v1.0.0</span> <!-- 👈 แก้ / เพิ่ม เวอร์ชันตรงนี้ -->
+                    </div>
+                    <button class="close-card-btn" onclick="toggleCard('pcall(function()')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- 👈 แก้คำอธิบายการใช้งานตรงนี้ -->
+                <p class="card-desc">
+                    <strong>💡 รายละเอียดการใช้งาน:</strong><br>
+                    ใช้สำหรับ เวลาที่ไม่มั้นใจว่าจะรันขึ้นมั้ย
+                </p>
+
+                <!-- 👈 แก้ตัวอย่างโค้ด Lua ตรงนี้ -->
+                <div class="code-header">💻 ตัวอย่างโค้ดการใช้งาน:</div>
+                <div class="card-code-box" id="code-player"></div>
+
+                <!-- ปุ่มคัดลอกโค้ด -->
+                <button class="copy-code-btn" onclick="copySnippet('code-pcall(function()', this)">
+                    <i class="fa-solid fa-copy"></i> คัดลอกโค้ดตัวอย่าง
+                </button>
+            </div>
+        </div>
+        <!-- ==================== จบตัวอย่างที่ 1 ==================== -->
+        
+
         <!-- ✍️ [จุดสำหรับเพิ่มฟังก์ชันใหม่]: ก๊อปปี้โครงสร้าง expandable-item ด้านบนมาแปะตรงนี้แล้วเปลี่ยน data-id และ id ให้ไม่ซ้ำกัน -->
 
     </div>
