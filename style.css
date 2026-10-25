@@ -211,7 +211,37 @@
 
 
 
-     /* 💊 สไตล์สำหรับกรอบแคปซูล Flex-Wrap */
+/* ======================================================= */
+/* 📦 สไตล์กรอบใหญ่ขอบขาว & ระบบแคปซูลเด้งสมูท (Physics-Pop) */
+/* ======================================================= */
+
+/* 1. กรอบใหญ่รองรับพื้นหลัง (ขอบขาวเข้ม + ชั้นแสงรองหลัง) */
+.docs-main-card {
+    margin-top: 25px;
+    text-align: left;
+    max-height: 520px;
+    overflow-y: auto;
+    padding: 25px 20px;
+    background: rgba(10, 12, 24, 0.85) !important;
+    border: 2px solid #ffffff !important; /* เส้นขอบขาวเข้ม */
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05) !important; /* แผ่นชั้นแสงสีขาวรองหลัง */
+    border-radius: 20px;
+}
+
+.docs-main-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #FFFFFF;
+}
+
+.docs-main-subtext {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+/* 2. พื้นที่จัดวางปุ่มแคปซูล (Flex-Wrap) */
 .capsule-grid-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -221,18 +251,20 @@
 
 .expandable-item {
     display: inline-block;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .expandable-item.active {
     width: 100%;
 }
 
+/* 3. ปุ่มหลอดแคปซูลเล็กขอบมน + ฟีลลิ่งสู้มือ (Micro-bounce) */
 .capsule-btn {
     width: fit-content;
-    background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(6, 182, 212, 0.25));
-    border: 1px solid var(--border-color);
-    border-radius: 50px;
-    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(6, 182, 212, 0.3));
+    border: 1px solid rgba(255, 255, 255, 0.6); /* ขอบขาวใสเน้นหลอด */
+    border-radius: 50px; /* ทรงหลอดแคปซูลมน */
+    padding: 7px 16px;
     color: #fff;
     font-size: 13px;
     font-weight: 600;
@@ -240,81 +272,151 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    transition: 0.3s;
     white-space: nowrap;
+    user-select: none;
+    transition: transform 0.15s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* เอฟเฟกต์ตอนเอานิ้วแตะ/กดลงไป (เด้งสู้มือ) */
+.capsule-btn:active {
+    transform: scale(0.92);
 }
 
 .capsule-btn:hover {
-    border-color: var(--secondary);
-    background: linear-gradient(135deg, rgba(147, 51, 234, 0.45), rgba(6, 182, 212, 0.45));
-    transform: translateY(-2px);
+    border-color: #ffffff;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.5), rgba(6, 182, 212, 0.5));
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
 }
 
+/* 4. การ์ดขยายทับกรอบใหญ่ + แอนิเมชันเด้งซูม (Pop-in Spring) */
 .expanded-card {
     width: 100%;
-    background: rgba(10, 10, 20, 0.95);
-    border: 1px solid var(--secondary);
+    background: rgba(15, 20, 35, 0.98);
+    border: 1.5px solid var(--secondary);
     border-radius: 16px;
-    padding: 16px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
-    animation: fadeInCard 0.3s ease;
+    padding: 18px;
+    margin-top: 5px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(6, 182, 212, 0.15);
+    animation: popExpand 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popExpand {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .card-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .card-title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--secondary);
 }
 
+/* ป้ายเวอร์ชัน */
+.version-badge {
+    background: rgba(147, 51, 234, 0.3);
+    border: 1px solid var(--primary);
+    color: #e9d5ff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+/* ปุ่มกากบาทปิดการ์ด */
 .close-card-btn {
     background: rgba(255, 255, 255, 0.1);
     border: none;
     color: #fff;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s;
+    transition: all 0.2s ease;
+}
+
+.close-card-btn:active {
+    transform: scale(0.85);
 }
 
 .close-card-btn:hover {
     background: #ef4444;
+    color: #fff;
 }
 
 .card-desc {
-    font-size: 12px;
+    font-size: 13px;
     color: #d1d5db;
-    line-height: 1.5;
-    margin-bottom: 10px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.code-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 6px;
 }
 
 .card-code-box {
     background: #05050a;
     border: 1px solid #374151;
-    border-radius: 8px;
-    padding: 10px;
+    border-radius: 10px;
+    padding: 12px;
     font-family: monospace;
-    font-size: 11px;
+    font-size: 12px;
     color: #00ff88;
     white-space: pre-wrap;
     word-break: break-all;
+    margin-bottom: 12px;
 }
 
-@keyframes fadeInCard {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ปุ่มคัดลอกโค้ด */
+.copy-code-btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, var(--primary), #7928ca);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.copy-code-btn:active {
+    transform: scale(0.97);
+}
+
+.copy-code-btn:hover {
+    opacity: 0.9;
 }
