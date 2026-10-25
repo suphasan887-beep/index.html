@@ -58,5 +58,57 @@
     <!-- ดึงไฟล์ JavaScript สำหรับทำงาน -->
     <script src="script.js"></script>
 
+
+
+
+
+
+    <!-- 📦 กรอบใหญ่คลังฟังก์ชัน (วางต่อท้ายกล่องเดิม) -->
+<div class="hero-card" style="text-align: left; max-height: 480px; overflow-y: auto; padding-right: 10px; margin-top: 20px;">
+    
+    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 5px; color: #FFF;">
+        <i class="fa-solid fa-list-check" style="color: var(--secondary);"></i> คลังฟังก์ชัน & คู่มือสคริปต์
+    </h3>
+    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">
+        กดที่ปุ่มแคปซูลเพื่อดูรายละเอียด (ปุ่มจะเรียงตามขนาดคำ และเลื่อนลงได้เรื่อยๆ)
+    </p>
+
+    <!-- พื้นที่ปุ่มแคปซูล -->
+    <div id="capsuleContainer" class="capsule-grid-wrapper">
+
+        <!-- 🔹 รายการที่ 1 -->
+        <div class="expandable-item" data-id="player">
+            <button class="capsule-btn" onclick="toggleCard('player')">
+                <span><i class="fa-solid fa-user"></i> Player</span>
+            </button>
+            <div class="expanded-card" id="card-player" style="display: none;">
+                <div class="card-header-row">
+                    <span class="card-title">Player & WalkSpeed</span>
+                    <button class="close-card-btn" onclick="toggleCard('player')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p class="card-desc">คำอธิบาย: ใช้สำหรับปรับแต่งค่าความเร็ว WalkSpeed / JumpPower ของตัวละครผู้เล่น</p>
+                <div class="card-code-box">game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100</div>
+            </div>
+        </div>
+
+        <!-- 🔹 รายการที่ 2 -->
+        <div class="expandable-item" data-id="remote">
+            <button class="capsule-btn" onclick="toggleCard('remote')">
+                <span><i class="fa-solid fa-terminal"></i> การยิง RemoteEvent ออโต้เก็บของ</span>
+            </button>
+            <div class="expanded-card" id="card-remote" style="display: none;">
+                <div class="card-header-row">
+                    <span class="card-title">การยิง RemoteEvent</span>
+                    <button class="close-card-btn" onclick="toggleCard('remote')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p class="card-desc">คำอธิบาย: สั่ง FireServer เพื่อเก็บของหรือทำกิจกรรมออโต้</p>
+                <div class="card-code-box">game:GetService("ReplicatedStorage").RemoteEvent:FireServer()</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    
+
 </body>
 </html>
