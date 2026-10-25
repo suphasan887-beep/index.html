@@ -215,30 +215,30 @@
 /* 📦 สไตล์กรอบใหญ่ขอบขาว & ระบบแคปซูลเด้งสมูท (Physics-Pop) */
 /* ======================================================= */
 
-/* 1. กรอบใหญ่รองรับพื้นหลัง (ขอบขาวเข้ม + ชั้นแสงรองหลัง) */
+/* 📦 กรอบใหญ่คลังฟังก์ชัน (พื้นหลังขาว ขอบดำ ตัวหนังสือเขียว) */
 .docs-main-card {
     margin-top: 25px;
     text-align: left;
     max-height: 520px;
     overflow-y: auto;
     padding: 25px 20px;
-    background: rgba(10, 12, 24, 0.85) !important;
-    border: 2px solid #ffffff !important; /* เส้นขอบขาวเข้ม */
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05) !important; /* แผ่นชั้นแสงสีขาวรองหลัง */
+    
+    /* 🎨 สีตามที่คุณต้องการ */
+    background: #ffffff !important;           /* พื้นหลังสีขาว */
+    color: #16a34a !important;               /* ตัวหนังสือสีเขียว */
+    border: 2px solid #000000 !important;    /* ขอบสีดำ */
+    
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important; /* เงาจางๆ ให้มีมิติ */
     border-radius: 20px;
 }
 
-.docs-main-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #FFFFFF;
+/* 🟢 ปรับหัวข้อและข้อความข้างในกรอบให้เป็นสีเขียวอ่านง่าย */
+.docs-main-card .docs-main-title {
+    color: #15803d !important; /* หัวข้อหลัก (สีเขียวเข้มขึ้นเพื่อให้ตัดกับพื้นหลังขาวและอ่านง่าย) */
 }
 
-.docs-main-subtext {
-    color: var(--text-muted);
-    font-size: 12px;
-    margin-bottom: 20px;
+.docs-main-card .docs-main-subtext {
+    color: #16a34a !important; /* คำอธิบายรอง */
 }
 
 /* 2. พื้นที่จัดวางปุ่มแคปซูล (Flex-Wrap) */
