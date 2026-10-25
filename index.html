@@ -118,6 +118,10 @@
 <button onclick="openAuthModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg transition active:scale-95">
     เข้าสู่ระบบ / สมัครสมาชิก 🔑
 </button>
+
+</button>
+
+</button>
             
             <a href="https://discord.gg/FETkmgVqc" target="_blank" class="social-btn btn-discord">
                 <i class="fa-brands fa-discord"></i> Discord
@@ -240,23 +244,23 @@ print("ตัวละครของผู้เล่นโหลดเสร�
 
 
         <!-- ======================================================= -->
-        <!-- 📌 ตัวอย่างที่ 2: หลอดแคปซูล (ก๊อปปี้บล็อกนี้ไปเพิ่มอันใหม่ได้เลย) -->
+        <!-- 📌 ตัวอย่างที่ 1: หลอดแคปซูล (ก๊อปปี้บล็อกนี้ไปเพิ่มอันใหม่ได้เลย) -->
         <!-- ======================================================= -->
-        <div class="expandable-item" data-id="pcall">
+        <div class="expandable-item" data-id="pcall(function()">
             <!-- 🔹 ปุ่มหลอดแคปซูลตอนย่อ (แก้ไข ไอคอน และ ชื่อหัวข้อ ตรงนี้) -->
-            <button class="capsule-btn" onclick="toggleCard('pcall')">
+            <button class="capsule-btn" onclick="toggleCard('pcall(function()')">
                 <i class="fa-solid fa-user"></i>
                 <span>pcall(function()</span> <!-- 👈 แก้ชื่อปุ่มแคปซูลตรงนี้ -->
             </button>
 
             <!-- 🔹 กล่องการ์ดตอนขยายร่าง (แก้ไข รายละเอียด โค้ด เวอร์ชั่น ตรงนี้) -->
-            <div class="expanded-card" id="card-pcall" style="display: none;">
+            <div class="expanded-card" id="card-pcall(function()" style="display: none;">
                 <div class="card-header-row">
                     <div class="card-title-group">
                         <span class="card-title">pcall(function()</span> <!-- 👈 แก้หัวข้อหลักตรงนี้ -->
                         <span class="version-badge">v1.0.0</span> <!-- 👈 แก้ / เพิ่ม เวอร์ชันตรงนี้ -->
                     </div>
-                    <button class="close-card-btn" onclick="toggleCard('pcall')">
+                    <button class="close-card-btn" onclick="toggleCard('pcall(function()')">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -269,7 +273,7 @@ print("ตัวละครของผู้เล่นโหลดเสร�
 
                 <!-- 👈 แก้ตัวอย่างโค้ด Lua ตรงนี้ -->
                 <div class="code-header">💻 ตัวอย่างโค้ดการใช้งาน:</div>
-                <div class="card-code-box" id="code-pcall">-- ครอบ pcall เพื่อกันสคริปต์พังถ้าหาของในแมพไม่เจอ
+                <div class="card-code-box" id="code-pcall(function()">-- ครอบ pcall เพื่อกันสคริปต์พังถ้าหาของในแมพไม่เจอ
 local success, result = pcall(function()
     return game.Workspace.PartName
 end)
@@ -282,15 +286,25 @@ end
                 </div>
 
                 <!-- ปุ่มคัดลอกโค้ด -->
-                <button class="copy-code-btn" onclick="copySnippet('code-pcall', this)">
+                <button class="copy-code-btn" onclick="copySnippet('code-pcall(function()', this)">
                     <i class="fa-solid fa-copy"></i> คัดลอกโค้ดตัวอย่าง
                 </button>
             </div>
         </div>
-        <!-- ==================== จบตัวอย่างที่ 2 ==================== -->
+        <!-- ==================== จบตัวอย่างที่ 1 ==================== -->
         
 
         <!-- ✍️ [จุดสำหรับเพิ่มฟังก์ชันใหม่]: ก๊อปปี้โครงสร้าง expandable-item ด้านบนมาแปะตรงนี้แล้วเปลี่ยน data-id และ id ให้ไม่ซ้ำกัน -->
+
+
+
+
+
+
+
+
+    <!-- ดึงไฟล์ JavaScript สำหรับทำงาน -->
+    <script src="script.js"></script>
         
 
 
@@ -298,8 +312,14 @@ end
         
     </div>
 </div>
-    <!-- ดึงไฟล์ JavaScript สำหรับทำงาน (วางท้าย body เพื่อให้หน้าโหลดครบก่อนค่อยรัน) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+                    
