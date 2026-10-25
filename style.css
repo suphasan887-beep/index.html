@@ -420,3 +420,58 @@
 .copy-code-btn:hover {
     opacity: 0.9;
 }
+
+
+
+
+
+/* 1. บังคับให้โครงสร้างหลักของหน้าเว็บจัดกึ่งกลางทั้งหมด */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* จัดทุกบล็อกให้อยู่กึ่งกลางแนวนอนของจอ */
+    background-color: #0f172a;
+    color: var(--text-main);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 2. บังคับให้ Header, Container และ Footer มีขนาดกว้างสูงสุดเท่ากัน (480px) */
+header, .container, footer {
+    width: 100%;
+    max-width: 480px; /* ล็อคความกว้างให้เท่ากันทั้งเว็บ */
+    box-sizing: border-box;
+}
+
+/* 3. ปรับแต่ง Header ให้รับกับความกว้าง 480px และดูสวยงามขึ้น */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(5, 5, 10, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* 4. จัดระยะห่าง Container ตรงกลาง */
+.container {
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* 5. จัด Footer ให้อยู่ตรงกลางตามขนาดเว็บ */
+footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: auto;
+}
