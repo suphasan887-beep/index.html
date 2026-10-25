@@ -85,8 +85,15 @@ function copySnippet(elementId, btnElement) {
 
 
 
+// 1. เชื่อมต่อกับโปรเจกต์ Supabase ของคุณ (นำ URL และ Anon Key จากหน้าเว็บ Supabase มาใส่)
+const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // ตัวอย่าง: 'https://xxxxx.supabase.co'
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t; // คีย์สาธารณะ (Anon Key) จาก Supabase
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 let isLampOn = false;
 
+// ฟังก์ชันดึงสายไฟสลับโหมด (อันเดิมที่มีอยู่แล้ว)
 function toggleLamp() {
     isLampOn = !isLampOn;
 
@@ -98,7 +105,6 @@ function toggleLamp() {
     const regCard = document.getElementById('register-card');
 
     if (isLampOn) {
-        // 💡 สถานะเปิดไฟ (เปลี่ยนเป็นโหมดสมัครสมาชิก - กระจกใสสว่าง)
         mainBg.classList.remove('bg-slate-950');
         mainBg.classList.add('bg-slate-900');
         lampLight.classList.remove('opacity-0');
@@ -108,16 +114,13 @@ function toggleLamp() {
         lampKnob.classList.add('bg-amber-200');
         lampHint.innerText = 'ดึงเพื่อปิดไฟ';
 
-        // ซ่อนหน้า Login สลับให้หน้า Register ขึ้นมาแทน
         loginCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
         loginCard.classList.remove('z-20');
         loginCard.classList.add('z-10');
 
         regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
         regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
-
     } else {
-        // 🌙 สถานะปิดไฟ (เปลี่ยนเป็นโหมดเข้าสู่ระบบ - กระจกเข้ม)
         mainBg.classList.remove('bg-slate-900');
         mainBg.classList.add('bg-slate-950');
         lampLight.classList.remove('opacity-100');
@@ -127,12 +130,80 @@ function toggleLamp() {
         lampKnob.classList.add('bg-amber-400');
         lampHint.innerText = 'ดึงสายไฟ';
 
-        // ซ่อนหน้า Register สลับให้หน้า Login ขึ้นมาแทน
         regCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
         regCard.classList.remove('z-20');
         regCard.classList.add('z-10');
 
         loginCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
         loginCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+    }
+}
+
+// ==========================================
+// 🚀 ฟังก์ชันเชื่อมต่อระบบสมาชิก Supabase
+// ==========================================
+
+// 1. ฟังก์ชันสมัครสมาชิก
+async function handleRegister() {
+    const username = document.getElementById('reg-username').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+    if (!username || !email || !password || !confirmPassword) {
+        alert('กรุณากรอกข้อมูลให้ครบทุกช่อง!');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert('รหัสผ่านทั้ง 2 ครั้งไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง!');
+        return;
+    }
+
+    // สมัครสมาชิกผ่าน Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+    });
+
+    if (authError) {
+        alert('สมัครสมาชิกไม่สำเร็จ: ' + authError.message);
+        return;
+    }
+
+    // บันทึกชื่อผู้ใช้ (Username) ลงในตาราง profiles ที่เราสร้างไว้
+    const userId = authData.user.id;
+    const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([{ id: userId, username: username }]);
+
+    if (profileError) {
+        alert('บันทึกชื่อผู้ใช้ไม่สำเร็จ: ' + profileError.message);
+    } else {
+        alert('สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยันตัวตน');
+        toggleLamp(); // สลับกลับมาหน้าล็อกอิน
+    }
+}
+
+// 2. ฟังก์ชันเข้าสู่ระบบ
+async function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+        alert('กรุณากรอกอีเมลและรหัสผ่าน!');
+        return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message);
+    } else {
+        alert('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับกลับมาครับ');
+        // ตรงนี้สามารถพาผู้ใช้ไปหน้ากิจกรรมต่อได้เลย เช่น window.location.href = "dashboard.html";
     }
 }
