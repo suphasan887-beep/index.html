@@ -85,19 +85,31 @@ function copySnippet(elementId, btnElement) {
 
 
 
-// 1. เชื่อมต่อกับโปรเจกต์ Supabase ของคุณ (นำ URL และ Anon Key จากหน้าเว็บ Supabase มาใส่)
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'https://ztkqtvdllpzjsvlqxzni.supabase.co; // ตัวอย่าง: 'https://xxxxx.supabase.co'
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t; // คีย์สาธารณะ (Anon Key) จาก Supabase
+    // 1. เชื่อมต่อกับโปรเจกต์ Supabase
+const SUPABASE_URL = 'https://ztkqtvdllpzjsvlqxzni.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let isLampOn = false;
 
-// ฟังก์ชันดึงสายไฟสลับโหมด (อันเดิมที่มีอยู่แล้ว)
+// ฟังก์ชันเปิด-ปิด Pop-up Modal
+function openAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100', 'pointer-events-auto');
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+}
+
+// ฟังก์ชันดึงสายไฟสลับโหมด (Login / Register)
 function toggleLamp() {
     isLampOn = !isLampOn;
 
-    const mainBg = document.getElementById('main-bg');
     const lampLight = document.getElementById('lamp-light');
     const lampKnob = document.getElementById('lamp-knob');
     const lampHint = document.getElementById('lamp-hint');
@@ -105,8 +117,7 @@ function toggleLamp() {
     const regCard = document.getElementById('register-card');
 
     if (isLampOn) {
-        mainBg.classList.remove('bg-slate-950');
-        mainBg.classList.add('bg-slate-900');
+        // 💡 สถานะเปิดไฟ (เปลี่ยนเป็นโหมดสมัครสมาชิก - กระจกใสสว่าง)
         lampLight.classList.remove('opacity-0');
         lampLight.classList.add('opacity-100');
         
@@ -121,8 +132,7 @@ function toggleLamp() {
         regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
         regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
     } else {
-        mainBg.classList.remove('bg-slate-900');
-        mainBg.classList.add('bg-slate-950');
+        // 🌙 สถานะปิดไฟ (เปลี่ยนเป็นโหมดเข้าสู่ระบบ - กระจกเข้ม)
         lampLight.classList.remove('opacity-100');
         lampLight.classList.add('opacity-0');
 
@@ -140,7 +150,7 @@ function toggleLamp() {
 }
 
 // ==========================================
-// 🚀 ฟังก์ชันเชื่อมต่อระบบสมาชิก Supabase
+// 🚀 ฟังก์ชันระบบสมาชิก Supabase
 // ==========================================
 
 // 1. ฟังก์ชันสมัครสมาชิก
@@ -171,7 +181,7 @@ async function handleRegister() {
         return;
     }
 
-    // บันทึกชื่อผู้ใช้ (Username) ลงในตาราง profiles ที่เราสร้างไว้
+    // บันทึกชื่อผู้ใช้ (Username) ลงในตาราง profiles
     const userId = authData.user.id;
     const { error: profileError } = await supabase
         .from('profiles')
@@ -204,6 +214,6 @@ async function handleLogin() {
         alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message);
     } else {
         alert('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับกลับมาครับ');
-        // ตรงนี้สามารถพาผู้ใช้ไปหน้ากิจกรรมต่อได้เลย เช่น window.location.href = "dashboard.html";
+        closeAuthModal(); // ปิดป๊อปอัปเมื่อล็อกอินสำเร็จ
     }
 }
