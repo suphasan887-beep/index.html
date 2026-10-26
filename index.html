@@ -1301,17 +1301,11 @@ document.addEventListener('DOMContentLoaded', function () {
     setStatus('กำลังเชื่อมต่อ Render...', 'sg-warn');
 
     try {
-const token = await getAccessToken();
-const response = await fetch(RENDER_BACKEND_URL, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + token
-  }
-});
+const response = await fetch(RENDER_BACKEND_URL);
 if (!response.ok) throw new Error('เซิร์ฟเวอร์ตอบรหัส ' + response.status);
 const data = await response.json();
-currentScriptCode = data.script || data.result;
+if (!data.success) throw new Error('เซิร์ฟเวอร์ตอบกลับไม่สำเร็จ');
+currentScriptCode = data.loaderScript;
 
       
     
