@@ -1279,7 +1279,12 @@ document.addEventListener('DOMContentLoaded', function () {
   closeBtn.addEventListener('click', () => toggleModal(false));
   modal.addEventListener('click', (e) => { if (e.target === modal) toggleModal(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleModal(false); });
-
+  window.SGWidget = {
+    show() { openBtn.classList.add('sg-visible'); },
+    hide() { openBtn.classList.remove('sg-visible'); toggleModal(false); }
+  };
+  // กรณีมี session เดิม เข้าหน้าหลักไปก่อนที่ widget จะพร้อม
+  if (!document.getElementById('dashboard-view').classList.contains('hidden')) window.SGWidget.show();
   function setStatus(text, cls) {
     statusEl.textContent = text;
     statusEl.className = cls || '';
@@ -1345,7 +1350,7 @@ currentScriptCode = data.script || data.result;
       document.body.removeChild(ta);
     }
   });
-})();
+});
         
 
 
