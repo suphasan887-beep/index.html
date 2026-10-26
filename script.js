@@ -239,3 +239,37 @@ window.closeAuthModal = closeAuthModal;
 window.toggleLamp = toggleLamp;
 window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
+
+
+// เปิดหน้าต่าง Modal ล็อกอิน
+function openAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    
+    // 1. สั่งแสดงผลเลเยอร์ด้วย display: flex ก่อน
+    modal.style.display = 'flex';
+    
+    // 2. เฟดอินแสดงความโปร่งใสและเปิดรับการคลิก
+    setTimeout(() => {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+    }, 10);
+}
+
+// ปิดหน้าต่าง Modal ล็อกอิน
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+
+    // 1. เฟดเอาความโปร่งใสออกและปิดการรับคลิก
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+
+    // 2. รอแอนิเมชันจบรอบ (300ms) แล้วซ่อน element ทิ้งทันที (ไม่ให้เหลือแผ่นใสบังคลิก)
+    setTimeout(() => {
+        if (modal.classList.contains('opacity-0')) {
+            modal.style.display = 'none';
+        }
+    }, 300);
+}
+
