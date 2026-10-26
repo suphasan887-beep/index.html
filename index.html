@@ -1641,6 +1641,41 @@ async function adminToggleBanUser(targetUserId) {
 
 
 
+// ฟังก์ชันตรวจสอบสิทธิ์และสร้าง/แสดงปุ่มแอดมินอัตโนมัติ
+async function checkAdminPermission() {
+    const btnContainer = document.getElementById('admin-menu-btn-container');
+    if (!btnContainer) return;
+
+    // ถ้ายังไม่ได้ล็อกอิน หรือไม่มีข้อมูลโปรไฟล์ ให้ซ่อนไว้ทันที
+    if (!currentProfile) {
+        btnContainer.classList.add('hidden');
+        return;
+    }
+
+    // ตรวจสอบว่าบัญชีนี้โดนแบนอยู่หรือไม่
+    if (currentProfile.banned) {
+        triggerBannedScreen();
+        return;
+    }
+
+    // เริ่มเปิดระบบฟังเสียง Realtime ของไอดีตัวเองเพื่อเช็กสถานะถูกแบน
+    initRealtimeBanListener(currentProfile.id);
+
+    // เช็กว่าบัญชีนี้เป็นแอดมินจริงหรือไม่
+    if (currentProfile.is_admin === true) {
+        // ถ้าเป็นแอดมิน ให้แสดงปุ่มแผงควบคุมขึ้นมา
+        btnContainer.classList.remove('hidden');
+    } else {
+        // ถ้าไม่ใช่แอดมิน ซ่อนไว้เงียบๆ เหมือนไม่มีอะไรเกิดขึ้น
+        btnContainer.classList.add('hidden');
+    }
+}
+    
+
+
+
+
+        
         
     </script>
 
