@@ -1285,7 +1285,10 @@ document.addEventListener('DOMContentLoaded', function () {
     hide() { openBtn.classList.remove('sg-visible'); toggleModal(false); }
   };
   // กรณีมี session เดิม เข้าหน้าหลักไปก่อนที่ widget จะพร้อม
-  if (!document.getElementById('dashboard-view').classList.contains('hidden')) window.SGWidget.show();
+    const dash = document.getElementById('dashboard-view');
+  const syncWidget = () => dash.classList.contains('hidden') ? window.SGWidget.hide() : window.SGWidget.show();
+  new MutationObserver(syncWidget).observe(dash, { attributes: true, attributeFilter: ['class'] });
+  syncWidget();
   function setStatus(text, cls) {
     statusEl.textContent = text;
     statusEl.className = cls || '';
