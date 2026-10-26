@@ -1439,6 +1439,208 @@ currentScriptCode = data.loaderScript;
 
 
 
+
+
+        // 🛡️ API แอดมิน: สลับสถานะ แบน / ปลดแบน ผู้ใช้
+app.post('/api/admin/toggle-ban', requireAdmin, async (req, res) => {
+  try {
+    const { targetUserId } = req.body;
+    if (!targetUserId) {
+      return res.status(400).json({ error: 'กรุณาระบุผู้ใช้ที่ต้องการแบน' });
+    }
+
+    const { data, error } = await supabaseAdmin.rpc('admin_toggle_ban', {
+      p_admin_id: req.adminId,
+      p_target_user: targetUserId
+    });
+
+    if (error) throw error;
+
+    res.json({ 
+      success: true, 
+      banned: data.banned, 
+      message: data.banned ? 'แบนผู้ใช้สำเร็จ 🚫' : 'ปลดแบนผู้ใช้สำเร็จ ✅' 
+    });
+  } catch (err) {
+    console.error('admin toggle ban error:', err);
+    res.status(400).json({ error: err.message || 'ทำรายการไม่สำเร็จ' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+        // ==========================================
+// 🚨 ระบบตรวจสอบการถูกแบนแบบ Real-time ฝั่ง Client
+// ==========================================
+let banSubscription = null;
+
+function initRealtimeBanListener(userId) {
+    if (banSubscription) return;
+
+    // ตรวจสอบสถานะ banned ของตัวเองจาก Supabase Realtime
+    banSubscription = supabase
+        .channel('public:profiles:id=eq.' + userId)
+        .on('postgres_changes', { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'profiles', 
+            filter: `id=eq.${userId}` 
+        }, payload => {
+            if (payload.new && payload.new.banned) {
+                triggerBannedScreen();
+            } else if (payload.new && !payload.new.banned) {
+                location.reload(); // ถ้าถูกปลดแบน ให้รีเฟรชกลับมาใช้งานได้ปกติ
+            }
+        })
+        .subscribe();
+}
+
+function triggerBannedScreen() {
+    let overlay = document.getElementById('banned-screen-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'banned-screen-overlay';
+        overlay.className = 'fixed inset-0 z-[99999] bg-red-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center text-white';
+        overlay.innerHTML = `
+            <div class="space-y-4 max-w-md bg-red-900/40 p-8 rounded-3xl border border-red-500/30 shadow-2xl animate-pulse">
+                <div class="text-6xl">⛔</div>
+                <h1 class="text-3xl font-extrabold text-red-500">คุณถูกแบนออกจากระบบ</h1>
+                <p class="text-sm text-red-200">บัญชีของคุณถูกระงับการใช้งานโดยผู้ดูแลระบบ เนื่องจากตรวจพบพฤติกรรมต้องสงสัยหรือไม่ปฏิบัติตามกฎของเว็บไซต์</p>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+    overlay.classList.remove('hidden');
+}
+
+
+// ==========================================
+// 👑 การแสดงปุ่มแอดมิน และโหลดข้อมูลแผงควบคุม
+// ==========================================
+async function checkAdminPermission() {
+    if (!currentProfile) return;
+    
+    // ถ้าโปรไฟล์ตัวเองโดนแบนอยู่แล้ว ให้แสดงหน้าจอดำแดงทันที
+    if (currentProfile.banned) {
+        triggerBannedScreen();
+        return;
+    }
+
+    // เริ่มเปิดระบบฟังเสียง Realtime ของไอดีตัวเอง
+    initRealtimeBanListener(currentProfile.id);
+
+    // ถ้าเป็นแอดมิน ค่อยๆ แสดงปุ่มแผงควบคุมแอดมินขึ้นมา
+    if (currentProfile.is_admin) {
+        const btnContainer = document.getElementById('admin-menu-btn-container');
+        if (btnContainer) {
+            btnContainer.classList.remove('hidden');
+        }
+    }
+}
+
+// โหลดรายชื่อผู้ใช้ทั้งหมดใน Modal แอดมิน
+async function loadAdminUserList() {
+    const listContainer = document.getElementById('admin-user-list');
+    try {
+        const token = await getAccessToken();
+        if (!token) return;
+
+        const baseUrl = typeof REDEEM_API_BASE !== 'undefined' ? REDEEM_API_BASE : RENDER_API_URL;
+        const res = await fetch(baseUrl.replace(/\/+$/, '') + '/api/admin/users', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'โหลดข้อมูลไม่สำเร็จ');
+
+        const users = json.users || [];
+        if (users.length === 0) {
+            listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">ยังไม่มีผู้ใช้งาน</p>';
+            return;
+        }
+
+        listContainer.innerHTML = users.map(u => {
+            const gameIdText = u.game_id ? `🎮 ID: ${escapeHtml(u.game_id)}` : '⚠️ ยังไม่ผูก ID';
+            const banBtnText = u.banned ? '🟢 ปลดแบน' : '🔴 แบน';
+            const banBtnClass = u.banned ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-rose-600 hover:bg-rose-500 text-white';
+            const userCardBg = u.banned ? 'bg-rose-950/30 border-rose-500/40' : 'bg-slate-900/90 border-white/10';
+
+            return `
+            <div class="${userCardBg} border rounded-2xl p-3 space-y-2 transition">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-sm font-bold text-indigo-300">${escapeHtml(u.username)}</span>
+                        <span class="ml-2 text-[10px] text-slate-400">${gameIdText}</span>
+                        ${u.banned ? '<span class="ml-2 px-2 py-0.5 bg-rose-500/20 text-rose-400 text-[10px] font-bold rounded-full">ถูกแบนอยู่</span>' : ''}
+                    </div>
+                    <span class="text-[10px] text-slate-500">${new Date(u.created_at).toLocaleDateString('th-TH')}</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <label class="block text-[10px] text-amber-300 font-semibold mb-0.5">แต้มรายสัปดาห์ (หมดอายุได้)</label>
+                        <input type="number" id="week-p-${u.id}" value="${u.week_points}" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-300 font-bold focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-indigo-300 font-semibold mb-0.5">แต้มสะสมถาวร</label>
+                        <input type="number" id="total-p-${u.id}" value="${u.total_points}" class="w-full px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-indigo-300 font-bold focus:outline-none focus:border-indigo-400">
+                    </div>
+                </div>
+
+                <div class="flex gap-2 pt-1">
+                    <button onclick="adminSavePoints('${u.id}')" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition active:scale-95">
+                        💾 บันทึกแต้ม
+                    </button>
+                    <button onclick="adminToggleBanUser('${u.id}')" class="px-3 py-1.5 ${banBtnClass} rounded-xl text-xs font-bold transition active:scale-95">
+                        ${banBtnText}
+                    </button>
+                </div>
+            </div>
+            `;
+        }).join('');
+
+    } catch (err) {
+        console.error(err);
+        listContainer.innerHTML = `<p class="text-xs text-rose-400 text-center py-6">${escapeHtml(err.message)}</p>`;
+    }
+}
+
+// ฟังก์ชันกดปุ่ม แบน / ปลดแบน แบบ Real-time
+async function adminToggleBanUser(targetUserId) {
+    try {
+        const token = await getAccessToken();
+        const baseUrl = typeof REDEEM_API_BASE !== 'undefined' ? REDEEM_API_BASE : RENDER_API_URL;
+
+        const res = await fetch(baseUrl.replace(/\/+$/, '') + '/api/admin/toggle-ban', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ targetUserId })
+        });
+
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'ทำรายการไม่สำเร็จ');
+
+        // รีเฟรชรายชื่อในแผงแอดมินทันที
+        loadAdminUserList();
+    } catch (err) {
+        alert('เกิดข้อผิดพลาด: ' + err.message);
+    }
+}
+        
+
+
+
         
     </script>
 
