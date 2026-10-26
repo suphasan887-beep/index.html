@@ -490,7 +490,14 @@
     </div>
 </div>
 
-
+<div class="text-left bg-slate-900/70 border border-white/10 rounded-2xl p-3 space-y-2">
+    <h4 class="text-sm font-bold text-emerald-300">🎁 กรอกโค้ดรับแต้ม</h4>
+    <div class="flex gap-2">
+        <input type="text" id="redeem-input" maxlength="32" autocapitalize="characters" autocomplete="off" placeholder="พิมพ์โค้ดที่นี่" class="flex-1 min-w-0 px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-xs text-white uppercase placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+        <button id="redeem-btn" onclick="redeemCode()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs font-bold transition active:scale-95">ใช้โค้ด</button>
+    </div>
+    <p id="redeem-status" class="text-[11px] text-slate-400 min-h-[14px]"></p>
+</div>
 
 
 
