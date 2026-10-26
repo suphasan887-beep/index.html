@@ -791,6 +791,7 @@
 
                 currentProfile = data;
                 renderProfileTop();
+                checkAdminPermission();
             } catch (err) {
                 console.error('โหลดโปรไฟล์ไม่สำเร็จ:', err);
             }
