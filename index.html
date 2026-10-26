@@ -490,6 +490,22 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+            
+            
+
+
+            
+
+
+
+            
             <div class="text-left">
                 <h4 class="text-sm font-bold text-amber-300 mb-2">📜 ประวัติการใช้งาน</h4>
                 <div id="history-list" class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
@@ -1253,6 +1269,67 @@
 
 
 
+// ===== ฟังก์ชันใช้โค้ดรับแต้ม (ฝั่งหน้าเว็บ) =====
+// วางในสคริปต์หลักของหน้าเว็บ ต่อจากฟังก์ชัน submitPointImage() (ก่อนหัวข้อ "อันดับผู้ใช้งาน")
+// ใช้ getAccessToken, loadPoints, loadLeaderboard, loadHistory ที่มีอยู่แล้วในหน้าเว็บ
+
+// 📍 ใส่ลิงก์เซิร์ฟเวอร์ Render ตัวใหม่ (โปรเจกต์โค้ดรับแต้ม) ไม่ต้องมี / ท้ายลิงก์
+const REDEEM_API_BASE = 'https://ชื่อโปรเจกต์ใหม่ของคุณ.onrender.com';
+
+async function redeemCode() {
+    const input = document.getElementById('redeem-input');
+    const status = document.getElementById('redeem-status');
+    const btn = document.getElementById('redeem-btn');
+    const code = input.value.trim().toUpperCase();
+
+    if (!code) {
+        status.textContent = 'กรุณากรอกโค้ดก่อน';
+        return;
+    }
+    if (REDEEM_API_BASE.indexOf('ชื่อโปรเจกต์ใหม่') !== -1) {
+        status.textContent = 'ยังไม่ได้ตั้งค่าลิงก์เซิร์ฟเวอร์ (REDEEM_API_BASE)';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.classList.add('opacity-60');
+    status.textContent = 'กำลังตรวจโค้ด... (ครั้งแรกอาจใช้เวลา 30-60 วินาที)';
+
+    try {
+        const token = await getAccessToken();
+        if (!token) throw new Error('กรุณาเข้าสู่ระบบใหม่อีกครั้ง');
+
+        const res = await fetch(REDEEM_API_BASE.replace(/\/+$/, '') + '/api/redeem-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ code: code })
+        });
+        const json = await res.json().catch(function () { return {}; });
+        if (!res.ok) throw new Error(json.error || 'ใช้โค้ดไม่สำเร็จ (รหัส ' + res.status + ')');
+
+        status.textContent = json.message || ('รับแต้มสำเร็จ +' + json.points + ' แต้ม ✅');
+        input.value = '';
+
+        await loadPoints();
+        loadLeaderboard();
+        loadHistory();
+    } catch (err) {
+        console.error(err);
+        status.textContent = err.message || 'ใช้โค้ดไม่สำเร็จ';
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('opacity-60');
+    }
+}
+
+
+
+
+
+        
 
 
 /* ===== Script Generator Widget : JavaScript ===== */
