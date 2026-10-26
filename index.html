@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTOWIN-13 | Authentication Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+
+        /* ตั้งค่าความนุ่มนวลในการเปลี่ยนการ์ด */
+        .auth-card {
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* 🌙 พื้นหลังการ์ดเข้าสู่ระบบ (โทนสีดำเข้มพรีเมียม) */
+        .card-dark-theme {
+            background: rgba(13, 17, 23, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+        }
+
+        /* 💡 พื้นหลังการ์ดสมัครสมาชิก (โทนสีขาวสะอาดตา) */
+        .card-light-theme {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* สายโคมไฟ (Pull String Switch Animation) */
+        .pull-string {
+            transition: transform 0.2s ease-in-out;
+        }
+        .pull-string:active {
+            transform: translateY(20px);
+        }
+
+        /* แสงไฟสว่างวาบตอนเปิดสวิตช์ */
+        .lamp-glow {
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        /* 📍 พื้นหลังรูปภาพแบบเบลอ ใช้ร่วมกันทั้งหน้าล็อกอินและหน้าหลัก */
+        body {
+            position: relative;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            /* 💡 เอาลิงก์รูปภาพของคุณมาวางตรงนี้ */
+            background-image: url('https://i.ibb.co/3YpWxb5J/FB-IMG-1787390135699.jpg');
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            /* 🌫️ ปรับระดับความเบลอตรงนี้ (เลขยิ่งเยอะยิ่งเบลอ เช่น 5px, 10px, 15px) */
+            filter: blur(8px);
+
+            transform: scale(1.1);
+            z-index: -1;
+        }
+
+        /* 🏆 แท่นอันดับ */
+        .podium-block {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .rank-1-glow {
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+        }
+
+        /* เลื่อนหน้าหลักได้ลื่นบนมือถือ */
+        #dashboard-view {
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body id="main-bg" class="bg-slate-950 min-h-screen flex items-center justify-center p-4 text-white transition-colors duration-700 overflow-hidden relative">
+
+    <!-- แสงสว่างจากโคมไฟด้านบน -->
+    <div id="lamp-light" class="lamp-glow absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-amber-100/15 rounded-full blur-[120px] pointer-events-none opacity-0 z-0"></div>
+
+    <!-- ================= สายโคมไฟสลับโหมด (PULL LAMP SWITCH) ================= -->
+    <div id="lamp-switch" onclick="toggleLamp()" class="pull-string absolute top-0 right-10 sm:right-20 z-50 cursor-pointer flex flex-col items-center group">
+        <div class="w-1 h-32 sm:h-40 bg-gradient-to-b from-slate-700 via-slate-400 to-amber-200/80 shadow-md"></div>
+        <div id="lamp-knob" class="w-6 h-9 bg-amber-400 rounded-full shadow-lg border-2 border-amber-200 group-hover:scale-110 transition duration-200 flex items-center justify-center">
+            <div class="w-1.5 h-1.5 bg-slate-900 rounded-full"></div>
+        </div>
+        <span id="lamp-hint" class="text-[10px] uppercase tracking-widest text-amber-300 font-bold mt-2 animate-bounce bg-slate-900/80 px-2 py-0.5 rounded-full border border-amber-400/30">
+            ดึงสายไฟ
+        </span>
+    </div>
+
+    <!-- ================= กล่องคอนเทนเนอร์หลัก (หน้าแรก) ================= -->
+    <div id="auth-view" class="relative w-full max-w-sm h-[520px] z-10 transition-all duration-300">
+
+        <!-- ================= 1. หน้าเข้าสู่ระบบ (การ์ดพื้นหลังสีดำ) ================= -->
+        <div id="login-card" class="auth-card card-dark-theme absolute inset-0 rounded-3xl p-6 flex flex-col justify-center space-y-4 text-white z-20">
+            <div class="text-center space-y-1">
+                <span class="text-[10px] font-bold tracking-widest uppercase text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+                    🔐 LOGIN PORTAL
+                </span>
+                <h2 class="text-2xl font-extrabold text-indigo-300 mt-2">เข้าสู่ระบบ</h2>
+                <p class="text-slate-400 text-xs">ยินดีต้อนรับกลับสู่ระบบสคริปต์และกิจกรรม</p>
+            </div>
+
+            <div class="space-y-3">
+                <!-- 🔧 แก้: เปลี่ยนจากอีเมลเป็นชื่อผู้ใช้งาน (ระบบสร้างอีเมลปลอมให้เอง) -->
+                <div>
+                    <label class="block text-xs uppercase text-slate-400 font-semibold mb-1">ชื่อผู้ใช้งาน (Username)</label>
+                    <input type="text" id="login-email" placeholder="Roblox Username" autocapitalize="none" autocomplete="username" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase text-slate-400 font-semibold mb-1">รหัสผ่าน</label>
+                    <input type="password" id="login-password" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400">
+                </div>
+            </div>
+
+            <button onclick="handleLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold text-sm shadow-lg shadow-indigo-600/40 transition active:scale-95">
+                เข้าสู่ระบบ
+            </button>
+
+            <div class="text-center pt-2">
+                <p class="text-xs text-slate-400">
+                    ยังไม่มีบัญชี? <span onclick="toggleLamp()" class="text-amber-300 font-bold underline cursor-pointer">ดึงสายไฟเพื่อสมัครสมาชิก 💡</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- ================= 2. หน้าสมัครสมาชิก (การ์ดพื้นหลังสีขาว) ================= -->
+        <div id="register-card" class="auth-card card-light-theme absolute inset-0 rounded-3xl p-6 flex flex-col justify-center space-y-3 text-slate-900 opacity-0 pointer-events-none scale-95 z-10">
+            <div class="text-center space-y-1">
+                <span class="text-[10px] font-bold tracking-widest uppercase text-amber-800 bg-amber-400/30 px-3 py-1 rounded-full border border-amber-400/40">
+                    📝 REGISTER PORTAL
+                </span>
+                <h2 class="text-2xl font-extrabold text-slate-900 mt-1">สมัครสมาชิก</h2>
+                <p class="text-slate-600 text-xs font-medium">สร้างบัญชีใหม่เพื่อใช้งานระบบ</p>
+            </div>
+
+            <div class="space-y-2">
+                <div>
+                    <label class="block text-[11px] uppercase text-slate-700 font-bold mb-0.5">ชื่อผู้ใช้งาน (Username)</label>
+                    <input type="text" id="reg-username" placeholder="Roblox Username" autocapitalize="none" autocomplete="username" class="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 font-medium">
+                </div>
+                <!-- 🔧 แก้: ลบช่องอีเมลออกแล้ว (ใช้ชื่อผู้ใช้สร้างอีเมลปลอมให้เองในโค้ด) -->
+                <div>
+                    <label class="block text-[11px] uppercase text-slate-700 font-bold mb-0.5">รหัสผ่าน</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 font-medium">
+                </div>
+                <div>
+                    <label class="block text-[11px] uppercase text-slate-700 font-bold mb-0.5">ยืนยันรหัสผ่านอีกครั้ง</label>
+                    <input type="password" id="reg-confirm-password" placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 font-medium">
+                </div>
+            </div>
+
+            <button onclick="handleRegister()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-bold text-xs shadow-lg shadow-amber-500/30 transition active:scale-95">
+                ยืนยันการสมัครสมาชิก
+            </button>
+
+            <div class="text-center pt-1">
+                <p class="text-xs text-slate-700 font-medium">
+                    มีบัญชีอยู่แล้ว? <span onclick="toggleLamp()" class="text-indigo-700 font-bold underline cursor-pointer">ดึงสายไฟเพื่อกลับไปเข้าสู่ระบบ 🌙</span>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= 3. หน้าหลักหลังล็อกอินสำเร็จ (เต็มจอ ใช้พื้นหลังรูปเดียวกับหน้าล็อกอิน) ================= -->
+    <div id="dashboard-view" class="hidden fixed inset-0 z-30 overflow-y-auto text-white">
+        <div class="absolute inset-0 bg-slate-950/50 pointer-events-none"></div>
+
+        <div class="relative w-full max-w-md mx-auto px-4 pb-10">
+
+            <!-- ===== แถบด้านบน: รูปโปรไฟล์ + ชื่อ + จำนวนผู้เข้าเว็บ ===== -->
+            <div class="flex items-center justify-between pt-4">
+                <button onclick="openProfile()" class="flex items-center gap-2 bg-slate-900/70 glass-panel border border-white/10 rounded-full pl-1 pr-3 py-1 active:scale-95 transition">
+                    <img id="top-avatar" src="" alt="โปรไฟล์" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400 bg-slate-800">
+                    <span id="top-username" class="text-xs font-semibold max-w-[110px] truncate">...</span>
+                </button>
+
+                <div class="flex items-center gap-1.5 bg-slate-900/70 glass-panel border border-white/10 rounded-full px-3 py-2">
+                    <span class="text-sm">👥</span>
+                    <span class="text-[11px] text-slate-300">ผู้เข้าเว็บไซต์</span>
+                    <span id="visitor-count" class="text-sm font-extrabold text-amber-300">0</span>
+                </div>
+            </div>
+
+            <!-- ===== ครึ่งบน: แท่นอันดับ 1 2 3 ===== -->
+            <div class="mt-4 rounded-3xl bg-slate-900/60 glass-panel border border-white/10 px-3 pt-4 pb-0 overflow-hidden">
+                <div class="text-center mb-2">
+                    <h3 class="text-lg font-extrabold text-amber-300">🏆 อันดับผู้ใช้งานสูงสุด</h3>
+                    <p class="text-[10px] text-slate-400">จัดอันดับตามจำนวนการใช้งาน</p>
+                </div>
+                <div id="podium" class="flex items-end justify-center gap-2 pt-2">
+                    <!-- แท่นอันดับถูกสร้างจาก JavaScript -->
+                </div>
+            </div>
+
+            <!-- ===== ครึ่งล่าง: พื้นที่ว่างไว้ตกแต่งเอง ===== -->
+            <div id="dashboard-content" class="mt-4 rounded-3xl bg-slate-900/60 glass-panel border border-white/10 p-6 text-center space-y-2 min-h-[200px]">
+                <h2 class="text-xl font-bold text-indigo-300">ยินดีต้อนรับสู่หน้าหลัก! 🎉</h2>
+                <p class="text-slate-400 text-xs">คุณเข้าสู่ระบบสำเร็จแล้ว ระบบพร้อมใช้งานสคริปต์</p>
+                <!-- 📍 วางเนื้อหาอื่น ๆ ของคุณตรงนี้ได้เลย -->
+            </div>
+
+           
+        </div>
+    </div>
+
+    <!-- ================= 4. หน้าต่างโปรไฟล์ (เปลี่ยนรูป + ดูประวัติ) ================= -->
+    <div id="profile-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70" onclick="if(event.target===this) closeProfile()">
+        <div class="card-dark-theme glass-panel w-full max-w-sm max-h-[85vh] overflow-y-auto rounded-3xl p-6 space-y-4 text-center relative">
+            <button onclick="closeProfile()" class="absolute top-3 right-4 text-slate-400 text-xl leading-none hover:text-white">✕</button>
+
+            <h3 class="text-lg font-extrabold text-indigo-300">โปรไฟล์ของฉัน</h3>
+
+            <div class="flex flex-col items-center gap-2">
+                <img id="modal-avatar" src="" alt="รูปโปรไฟล์" class="w-24 h-24 rounded-full object-cover border-4 border-amber-400 bg-slate-800">
+                <p id="modal-username" class="font-bold text-base">...</p>
+                <p id="modal-email" class="text-[11px] text-slate-400"></p>
+                <p class="text-xs text-slate-300">คะแนนการใช้งาน: <span id="modal-usage" class="font-extrabold text-amber-300">0</span></p>
+
+                <input type="file" id="avatar-input" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                <button onclick="document.getElementById('avatar-input').click()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-semibold transition active:scale-95">
+                    📷 เปลี่ยนรูปโปรไฟล์
+                </button>
+                <p id="avatar-status" class="text-[11px] text-slate-400 min-h-[16px]"></p>
+            </div>
+            
+            <!-- ===== ระบบแต้ม ===== -->
+<div class="text-left bg-slate-900/70 border border-white/10 rounded-2xl p-3 space-y-2">
+
+    <!-- ===== ผูก ID เกม (ผูกได้ครั้งเดียว) ===== -->
+    <div class="border-b border-white/10 pb-2 space-y-2">
+        <div id="gameid-bound" class="hidden flex items-center justify-between">
+            <span class="text-sm font-bold text-emerald-300">ID เกม 🎮 :</span>
+            <span id="gameid-text" class="text-sm font-extrabold text-emerald-300"></span>
+        </div>
+        <div id="gameid-form" class="space-y-2">
+            <input type="text" id="gameid-input" inputmode="numeric" maxlength="14" placeholder="กรอก ID เกม (ตัวเลข)" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+            <button id="gameid-btn" onclick="bindGameId()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs font-bold transition active:scale-95">
+                ผูก ID เกม (ผูกแล้วเปลี่ยนเองไม่ได้)
+            </button>
+        </div>
+        <p id="gameid-status" class="text-[11px] text-slate-400 min-h-[14px]"></p>
+    </div>
+
+    <!-- บรรทัดที่ 1: แต้มรายสัปดาห์ (หมดอายุใน 7 วัน) -->
+    <div class="flex items-center justify-between">
+        <span class="text-sm font-bold text-amber-300">แต้ม 🪙 :</span>
+        <span id="week-points" class="text-lg font-extrabold text-amber-300">0</span>
+    </div>
+    <p id="week-expire" class="text-[10px] text-slate-500 text-right min-h-[12px]"></p>
+
+    <!-- บรรทัดที่ 2: แต้มสะสมถาวร (ไม่หมดอายุ) -->
+    <div class="flex items-center justify-between border-t border-white/10 pt-2">
+        <span class="text-sm font-bold text-indigo-300">แต้มสะสม 🪙 :</span>
+        <span id="total-points" class="text-lg font-extrabold text-indigo-300">0</span>
+    </div>
+
+    <!-- ส่วนส่งรูปรับแต้ม -->
+    <div class="border-t border-white/10 pt-2 space-y-2">
+        <input type="file" id="point-image-input" accept="image/*" class="hidden" onchange="handlePointImageSelect(event)">
+
+        <img id="point-preview" src="" alt="ตัวอย่างรูป" class="hidden w-full max-h-40 object-contain rounded-xl border border-white/10 bg-slate-950/60">
+
+        <div class="flex gap-2">
+            <button onclick="document.getElementById('point-image-input').click()" class="flex-1 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold transition active:scale-95">
+                🖼️ เลือกรูป
+            </button>
+            <button id="point-submit-btn" onclick="submitPointImage()" class="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition active:scale-95">
+                ส่งรูปรับแต้ม
+            </button>
+        </div>
+
+        <p id="point-status" class="text-[11px] text-slate-400 min-h-[16px] text-center"></p>
+    </div>
+</div>
+
+            <div class="text-left">
+                <h4 class="text-sm font-bold text-amber-300 mb-2">📜 ประวัติการใช้งาน</h4>
+                <div id="history-list" class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-500 text-center py-3">กำลังโหลด...</p>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="w-full px-5 py-2.5 bg-rose-500/20 text-rose-300 rounded-xl text-xs font-semibold border border-rose-500/30 hover:bg-rose-500/30 transition">
+    ออกจากระบบ
+</button>
+        </div>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT & SERVER/SUPABASE CONFIG ================= -->
+    <script>
+        // =========================================================================
+        // 📌 [จุดสำหรับตั้งค่าเซิร์ฟเวอร์เบส / Supabase / API Key]
+        // =========================================================================
+        const SUPABASE_URL = 'https://ztkqtvdllpzjsvlqxzni.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_BkDeJmZYwMys8OP4eMkpVQ_F6hrJ35t';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const SERVER_CONFIG = {
+            API_BASE_URL: "วาง_URL_เซิร์ฟเวอร์ของคุณที่นี่",
+            SERVER_API_KEY: "วาง_API_KEY_หรือ_Supabase_Key_ของคุณที่นี่"
+        };
+        // =========================================================================
+
+        let isLampOn = false;
+        let currentUser = null;      // ผู้ใช้ที่ล็อกอินอยู่
+        let currentProfile = null;   // ข้อมูลโปรไฟล์ของผู้ใช้
+        let leaderboardTimer = null; // ตัวรีเฟรชอันดับอัตโนมัติ
+
+        // รูปโปรไฟล์เริ่มต้น (รูปคนสีเทา) ใช้เมื่อยังไม่ได้อัปโหลดรูป
+        const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
+            '<rect width="100" height="100" fill="#334155"/>' +
+            '<circle cx="50" cy="38" r="18" fill="#94a3b8"/>' +
+            '<path d="M14 92c0-20 16-34 36-34s36 14 36 34z" fill="#94a3b8"/>' +
+            '</svg>'
+        );
+
+        // ป้องกันตัวอักษรพิเศษในชื่อผู้ใช้ (กัน XSS)
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // 🔧 เพิ่ม: แปลงชื่อผู้ใช้เป็นอีเมลปลอม (ไม่มีการส่งอีเมลจริง)
+        function usernameToEmail(username) {
+            const clean = String(username || '').trim().toLowerCase();
+            if (!/^[a-z0-9_.-]{3,20}$/.test(clean)) return null;
+            return clean + '@ktowin.app';
+        }
+
+        // ฟังก์ชันสลับโหมดระหว่างหน้า Login (การ์ดดำ) และ Register (การ์ดขาว) ด้วยการดึงสายไฟ
+        function toggleLamp() {
+            isLampOn = !isLampOn;
+
+            const mainBg = document.getElementById('main-bg');
+            const lampLight = document.getElementById('lamp-light');
+            const lampKnob = document.getElementById('lamp-knob');
+            const lampHint = document.getElementById('lamp-hint');
+            const loginCard = document.getElementById('login-card');
+            const regCard = document.getElementById('register-card');
+
+            if (isLampOn) {
+                mainBg.classList.remove('bg-slate-950');
+                mainBg.classList.add('bg-slate-900');
+                lampLight.classList.remove('opacity-0');
+                lampLight.classList.add('opacity-100');
+
+                lampKnob.classList.remove('bg-amber-400');
+                lampKnob.classList.add('bg-amber-200');
+                lampHint.innerText = 'ดึงเพื่อปิดไฟ';
+
+                loginCard.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+                loginCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+
+                regCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+                regCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+
+            } else {
+                mainBg.classList.remove('bg-slate-900');
+                mainBg.classList.add('bg-slate-950');
+                lampLight.classList.remove('opacity-100');
+                lampLight.classList.add('opacity-0');
+
+                lampKnob.classList.remove('bg-amber-200');
+                lampKnob.classList.add('bg-amber-400');
+                lampHint.innerText = 'ดึงสายไฟ';
+
+                regCard.classList.remove('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+                regCard.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+
+                loginCard.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'z-10');
+                loginCard.classList.add('opacity-100', 'scale-100', 'pointer-events-auto', 'z-20');
+            }
+        }
+
+        // ฟังก์ชันรองรับการกดปุ่มเข้าสู่ระบบ
+        async function handleLogin() {
+            // 🔧 แก้: ใช้ชื่อผู้ใช้แทนอีเมล แล้วแปลงเป็นอีเมลปลอมเอง
+            const username = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!username || !password) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            const email = usernameToEmail(username);
+            if (!email) {
+                alert('ชื่อผู้ใช้ต้องเป็น a-z 0-9 _ . - ยาว 3-20 ตัวอักษร');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) {
+                    if (/invalid login credentials/i.test(error.message)) {
+                        throw new Error('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+                    }
+                    throw error;
+                }
+
+                currentUser = data.user;
+
+                // บันทึกประวัติ + เพิ่มคะแนนการใช้งาน แล้วสลับไปหน้าหลักทันที
+                await switchToDashboard();
+                await logActivity('เข้าสู่ระบบ');
+                await loadProfile();
+                await loadLeaderboard();
+
+            } catch (err) {
+                alert(err.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+            }
+        }
+
+        // ฟังก์ชันสมัครสมาชิก
+        async function handleRegister() {
+            // 🔧 แก้: ไม่ใช้ช่องอีเมลแล้ว สร้างอีเมลปลอมจากชื่อผู้ใช้
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+            if (!username || !password || !confirmPassword) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            const email = usernameToEmail(username);
+            if (!email) {
+                alert('ชื่อผู้ใช้ต้องเป็น a-z 0-9 _ . - ยาว 3-20 ตัวอักษร');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: { username: username }
+                    }
+                });
+                if (error) {
+                    if (/already registered/i.test(error.message)) {
+                        throw new Error('ชื่อผู้ใช้นี้ถูกใช้แล้ว กรุณาเปลี่ยนชื่อ');
+                    }
+                    throw error;
+                }
+
+                alert('สมัครสมาชิกสำเร็จ! เข้าสู่ระบบได้เลย');
+
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-password').value = '';
+                document.getElementById('reg-confirm-password').value = '';
+
+                if (isLampOn) {
+                    toggleLamp();
+                }
+
+            } catch (err) {
+                alert(err.message || 'เกิดข้อผิดพลาดในการสมัครสมาชิก');
+            }
+        }
+
+        // 🔀 ฟังก์ชันสลับไปหน้าหลัก (ล้างหน้าล็อกอินทิ้ง แล้วเปิดหน้าหลักเต็มจอ)
+        async function switchToDashboard() {
+            const authView = document.getElementById('auth-view');
+            const dashboardView = document.getElementById('dashboard-view');
+            const lampSwitch = document.getElementById('lamp-switch');
+            const lampLight = document.getElementById('lamp-light');
+
+            if (authView) authView.classList.add('hidden');
+            if (lampSwitch) lampSwitch.classList.add('hidden');
+            if (lampLight) lampLight.classList.add('hidden');
+            if (dashboardView) dashboardView.classList.remove('hidden');
+
+            // ล้างช่องกรอกรหัสผ่านออกจากหน้าเว็บเพื่อความปลอดภัย
+            document.getElementById('login-password').value = '';
+
+            // ตั้งค่ารูปเริ่มต้นไว้ก่อนระหว่างรอโหลดข้อมูลจริง
+            document.getElementById('top-avatar').src = DEFAULT_AVATAR;
+
+            // รีเฟรชอันดับอัตโนมัติทุก 30 วินาที
+            if (leaderboardTimer) clearInterval(leaderboardTimer);
+            leaderboardTimer = setInterval(loadLeaderboard, 30000);
+        }
+
+        // 🔙 ฟังก์ชันออกจากระบบ (กลับมาหน้าล็อกอิน)
+        async function handleLogout() {
+            try {
+                await supabaseClient.auth.signOut();
+            } catch (err) {
+                console.error('ออกจากระบบไม่สำเร็จ:', err);
+            }
+
+            currentUser = null;
+            currentProfile = null;
+            if (leaderboardTimer) clearInterval(leaderboardTimer);
+
+            closeProfile();
+
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('auth-view').classList.remove('hidden');
+            document.getElementById('lamp-switch').classList.remove('hidden');
+            document.getElementById('lamp-light').classList.remove('hidden');
+        }
+
+        // =====================================================================
+        // 👤 โปรไฟล์ผู้ใช้
+        // =====================================================================
+
+        // โหลดข้อมูลโปรไฟล์ของตัวเอง (ถ้ายังไม่มีให้สร้างให้อัตโนมัติ)
+        async function loadProfile() {
+            if (!currentUser) return;
+
+            try {
+                let { data, error } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .maybeSingle();
+                if (error) throw error;
+
+                if (!data) {
+                    const fallbackName =
+                        (currentUser.user_metadata && currentUser.user_metadata.username) ||
+                        (currentUser.email ? currentUser.email.split('@')[0] : 'ผู้ใช้');
+                    const ins = await supabaseClient
+                        .from('profiles')
+                        .insert({ id: currentUser.id, username: fallbackName })
+                        .select()
+                        .single();
+                    if (ins.error) throw ins.error;
+                    data = ins.data;
+                }
+
+                currentProfile = data;
+                renderProfileTop();
+            } catch (err) {
+                console.error('โหลดโปรไฟล์ไม่สำเร็จ:', err);
+            }
+        }
+
+        // แสดงรูปและชื่อที่แถบด้านบน
+        function renderProfileTop() {
+            if (!currentProfile) return;
+            document.getElementById('top-avatar').src = currentProfile.avatar_url || DEFAULT_AVATAR;
+            document.getElementById('top-username').textContent = currentProfile.username || 'ผู้ใช้';
+        }
+
+        // เปิดหน้าต่างโปรไฟล์
+        async function openProfile() {
+            const modal = document.getElementById('profile-modal');
+            modal.classList.remove('hidden');
+
+            await loadProfile();
+
+            if (currentProfile) {
+                document.getElementById('modal-avatar').src = currentProfile.avatar_url || DEFAULT_AVATAR;
+                document.getElementById('modal-username').textContent = currentProfile.username || 'ผู้ใช้';
+                document.getElementById('modal-usage').textContent = currentProfile.usage_count || 0;
+            }
+            // 🔧 แก้: ไม่โชว์อีเมลปลอมในโปรไฟล์
+            document.getElementById('modal-email').textContent = '';
+            document.getElementById('avatar-status').textContent = '';
+
+            loadHistory();
+            loadPoints();
+        }
+
+        function closeProfile() {
+            pendingPointImage = null;
+            const pv = document.getElementById('point-preview');
+            if (pv) { pv.src = ''; pv.classList.add('hidden'); }
+            const ps = document.getElementById('point-status');
+            if (ps) ps.textContent = '';
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        // อัปโหลดรูปโปรไฟล์ใหม่
+        async function handleAvatarUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            const status = document.getElementById('avatar-status');
+            if (!file) return;
+
+            if (!currentUser) {
+                status.textContent = 'กรุณาเข้าสู่ระบบใหม่อีกครั้ง';
+                return;
+            }
+            if (!file.type.startsWith('image/')) {
+                status.textContent = 'กรุณาเลือกไฟล์รูปภาพเท่านั้น';
+                return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                status.textContent = 'ไฟล์ใหญ่เกินไป (ไม่เกิน 2MB)';
+                return;
+            }
+
+            status.textContent = 'กำลังอัปโหลด...';
+
+            try {
+                const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+                const filePath = currentUser.id + '/avatar.' + ext;
+
+                const up = await supabaseClient.storage
+                    .from('avatars')
+                    .upload(filePath, file, { upsert: true, contentType: file.type });
+                if (up.error) throw up.error;
+
+                const pub = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
+                // ใส่ตัวเลขท้าย URL กันเบราว์เซอร์แคชรูปเก่า
+                const newUrl = pub.data.publicUrl + '?v=' + Date.now();
+
+                const upd = await supabaseClient
+                    .from('profiles')
+                    .update({ avatar_url: newUrl })
+                    .eq('id', currentUser.id);
+                if (upd.error) throw upd.error;
+
+                if (currentProfile) currentProfile.avatar_url = newUrl;
+                document.getElementById('modal-avatar').src = newUrl;
+                renderProfileTop();
+                status.textContent = 'เปลี่ยนรูปโปรไฟล์สำเร็จ ✅';
+
+                await logActivity('เปลี่ยนรูปโปรไฟล์');
+                loadHistory();
+                loadLeaderboard();
+
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'อัปโหลดไม่สำเร็จ: ' + (err.message || 'เกิดข้อผิดพลาด');
+            } finally {
+                event.target.value = '';
+            }
+        }
+
+        // โหลดประวัติการใช้งานของตัวเอง
+        async function loadHistory() {
+            const list = document.getElementById('history-list');
+            if (!currentUser) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('activity_logs')
+                    .select('action, created_at')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(30);
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<p class="text-xs text-slate-500 text-center py-3">ยังไม่มีประวัติการใช้งาน</p>';
+                    return;
+                }
+
+                list.innerHTML = data.map(function (row) {
+                    const d = new Date(row.created_at);
+                    const dateText = d.toLocaleString('th-TH', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                    return '<div class="flex items-center justify-between bg-slate-900/80 border border-white/5 rounded-xl px-3 py-2">' +
+                        '<span class="text-xs text-slate-200">' + escapeHtml(row.action) + '</span>' +
+                        '<span class="text-[10px] text-slate-500">' + escapeHtml(dateText) + '</span>' +
+                        '</div>';
+                }).join('');
+
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<p class="text-xs text-rose-400 text-center py-3">โหลดประวัติไม่สำเร็จ</p>';
+            }
+        }
+
+        // บันทึกประวัติ + เพิ่มคะแนนการใช้งาน 1 แต้ม
+        // 📍 เรียกใช้จากปุ่มหรือฟีเจอร์ไหนก็ได้ เช่น logActivity('กดรับสคริปต์')
+        async function logActivity(actionText) {
+            try {
+                const { error } = await supabaseClient.rpc('log_activity', { p_action: actionText });
+                if (error) throw error;
+            } catch (err) {
+                console.error('บันทึกประวัติไม่สำเร็จ:', err);
+            }
+        }
+
+        // =====================================================================
+        // 🪙 ระบบแต้ม (ส่งรูป -> เซิร์ฟเวอร์ Render ถาม AI -> บวกแต้ม)
+        // =====================================================================
+
+        // 📍 [สำคัญ] ใส่ลิงก์เซิร์ฟเวอร์ Render ของคุณตรงนี้ (ไม่ต้องมี / ท้ายลิงก์)
+        const RENDER_API_URL = 'https://ai-uvix.onrender.com';
+        // ตัด / ท้ายลิงก์ทิ้งอัตโนมัติ กันเกิด // ซ้อนกัน
+        const API_BASE = RENDER_API_URL.trim().replace(/\/+$/, '');
+
+        // เก็บรูปที่เลือกไว้รอกดส่ง
+        let pendingPointImage = null; // { base64, mime }
+
+        async function getAccessToken() {
+            const { data } = await supabaseClient.auth.getSession();
+            return data && data.session ? data.session.access_token : null;
+        }
+
+        function renderPoints(stats) {
+            const bound = document.getElementById('gameid-bound');
+            const form = document.getElementById('gameid-form');
+            if (stats.game_id) {
+                document.getElementById('gameid-text').textContent = stats.game_id;
+                bound.classList.remove('hidden');
+                form.classList.add('hidden');
+            } else {
+                bound.classList.add('hidden');
+                form.classList.remove('hidden');
+            }
+            document.getElementById('week-points').textContent = (stats.week_points || 0).toLocaleString('th-TH');
+            document.getElementById('total-points').textContent = (stats.total_points || 0).toLocaleString('th-TH');
+
+            const expireEl = document.getElementById('week-expire');
+            if (stats.week_expires_at) {
+                const msLeft = new Date(stats.week_expires_at).getTime() - Date.now();
+                const daysLeft = Math.max(0, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
+                expireEl.textContent = 'แต้มหมดอายุใน ' + daysLeft + ' วัน';
+            } else {
+                expireEl.textContent = '';
+            }
+        }
+
+        async function loadPoints() {
+            const status = document.getElementById('point-status');
+            try {
+                const token = await getAccessToken();
+                if (!token) return;
+
+                const res = await fetch(API_BASE + '/api/my-points', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const json = await res.json();
+                if (json.banned) {
+                    status.textContent = json.error || 'บัญชีนี้ถูกระงับการใช้งาน';
+                    return;
+                }
+                if (!res.ok) throw new Error(json.error || 'โหลดแต้มไม่สำเร็จ');
+
+                renderPoints(json);
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'โหลดแต้มไม่สำเร็จ (เซิร์ฟเวอร์อาจกำลังตื่น ลองใหม่อีกครั้ง)';
+            }
+        }
+
+        // ย่อรูปก่อนส่ง
+        function resizeImageToBase64(file, maxSize) {
+            return new Promise(function (resolve, reject) {
+                const reader = new FileReader();
+                reader.onerror = function () { reject(new Error('อ่านไฟล์ไม่สำเร็จ')); };
+                reader.onload = function () {
+                    const img = new Image();
+                    img.onerror = function () { reject(new Error('เปิดรูปไม่สำเร็จ')); };
+                    img.onload = function () {
+                        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+                        const w = Math.round(img.width * scale);
+                        const h = Math.round(img.height * scale);
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                        resolve({
+                            dataUrl: dataUrl,
+                            base64: dataUrl.split(',')[1],
+                            mime: 'image/jpeg'
+                        });
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // เมื่อเลือกรูป: แสดงตัวอย่างและเก็บไว้รอส่ง
+        async function handlePointImageSelect(event) {
+            const file = event.target.files && event.target.files[0];
+            const status = document.getElementById('point-status');
+            const preview = document.getElementById('point-preview');
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                status.textContent = 'กรุณาเลือกไฟล์รูปภาพเท่านั้น';
+                return;
+            }
+
+            try {
+                status.textContent = 'กำลังเตรียมรูป...';
+                const result = await resizeImageToBase64(file, 1280);
+                pendingPointImage = { base64: result.base64, mime: result.mime };
+
+                preview.src = result.dataUrl;
+                preview.classList.remove('hidden');
+                status.textContent = 'เลือกรูปแล้ว กด "ส่งรูปรับแต้ม" ได้เลย';
+            } catch (err) {
+                console.error(err);
+                pendingPointImage = null;
+                status.textContent = err.message || 'เตรียมรูปไม่สำเร็จ';
+            } finally {
+                event.target.value = '';
+            }
+        }
+
+        // ผูก ID เกม (ผูกได้ครั้งเดียว)
+        async function bindGameId() {
+            const input = document.getElementById('gameid-input');
+            const status = document.getElementById('gameid-status');
+            const btn = document.getElementById('gameid-btn');
+            const gid = input.value.trim();
+
+            if (!/^\d{7,14}$/.test(gid)) {
+                status.textContent = 'ID เกมต้องเป็นตัวเลข 7-14 หลัก';
+                return;
+            }
+            if (!confirm('ยืนยันผูก ID เกม ' + gid + ' ?\nผูกแล้วจะเปลี่ยนเองไม่ได้ และแต้มทั้งหมดจะแลกเข้า ID นี้เท่านั้น')) return;
+
+            btn.disabled = true;
+            btn.classList.add('opacity-60');
+            status.textContent = 'กำลังผูก ID...';
+
+            try {
+                const token = await getAccessToken();
+                if (!token) throw new Error('กรุณาเข้าสู่ระบบใหม่อีกครั้ง');
+
+                const res = await fetch(API_BASE + '/api/bind-game-id', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ game_id: gid })
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.error || 'ผูก ID ไม่สำเร็จ');
+
+                status.textContent = json.message || 'ผูก ID เกมสำเร็จ ✅';
+                await loadPoints();
+            } catch (err) {
+                console.error(err);
+                status.textContent = err.message || 'ผูก ID ไม่สำเร็จ';
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-60');
+            }
+        }
+
+        // ส่งรูปไปเซิร์ฟเวอร์ Render เพื่อให้ AI ตรวจและบวกแต้ม
+        async function submitPointImage() {
+            const status = document.getElementById('point-status');
+            const btn = document.getElementById('point-submit-btn');
+            const preview = document.getElementById('point-preview');
+
+            if (!pendingPointImage) {
+                status.textContent = 'กรุณาเลือกรูปก่อน';
+                return;
+            }
+            if (RENDER_API_URL.indexOf('ชื่อแอปของคุณ') !== -1) {
+                status.textContent = 'ยังไม่ได้ตั้งค่าลิงก์เซิร์ฟเวอร์ (RENDER_API_URL)';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.classList.add('opacity-60');
+            status.textContent = 'กำลังตรวจรูป... (ครั้งแรกอาจใช้เวลาประมาณ 30-60 วินาที)';
+
+            try {
+                const token = await getAccessToken();
+                if (!token) throw new Error('กรุณาเข้าสู่ระบบใหม่อีกครั้ง');
+
+                const res = await fetch(API_BASE + '/api/submit-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        image: pendingPointImage.base64,
+                        mime: pendingPointImage.mime
+                    })
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.error || 'ส่งรูปไม่สำเร็จ');
+
+                status.textContent = json.message || 'ส่งรูปสำเร็จ ✅';
+
+                pendingPointImage = null;
+                preview.src = '';
+                preview.classList.add('hidden');
+
+                await loadPoints();
+                await loadLeaderboard();
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'ส่งรูปไม่สำเร็จ: ' + (err.message || 'เกิดข้อผิดพลาด');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-60');
+            }
+        }
+
+        // =====================================================================
+        // 🏆 อันดับผู้ใช้งาน
+        // =====================================================================
+        async function loadLeaderboard() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('leaderboard')
+                    .select('username, avatar_url, usage_count')
+                    .order('usage_count', { ascending: false })
+                    .limit(3);
+                if (error) throw error;
+                renderPodium(data || []);
+            } catch (err) {
+                console.error('โหลดอันดับไม่สำเร็จ:', err);
+                renderPodium([]);
+            }
+        }
+
+        // วาดแท่นอันดับ (ลำดับแสดงผล: 2 | 1 | 3)
+        function renderPodium(users) {
+            const podium = document.getElementById('podium');
+
+            const config = {
+                1: { height: 'h-36', color: 'from-amber-300 to-amber-500', text: 'text-amber-950', avatar: 'w-20 h-20 border-amber-300 rank-1-glow', medal: '👑' },
+                2: { height: 'h-24', color: 'from-slate-200 to-slate-400', text: 'text-slate-900', avatar: 'w-16 h-16 border-slate-300', medal: '🥈' },
+                3: { height: 'h-16', color: 'from-orange-300 to-orange-500', text: 'text-orange-950', avatar: 'w-14 h-14 border-orange-300', medal: '🥉' }
+            };
+
+            const order = [2, 1, 3];
+
+            podium.innerHTML = order.map(function (rank) {
+                const u = users[rank - 1];
+                const c = config[rank];
+
+                const name = u ? escapeHtml(u.username || 'ผู้ใช้') : 'ว่าง';
+                const score = u ? (u.usage_count || 0) : '-';
+                const avatar = u && u.avatar_url ? escapeHtml(u.avatar_url) : DEFAULT_AVATAR;
+                const emptyClass = u ? '' : 'opacity-40';
+
+                return '<div class="flex flex-col items-center flex-1 min-w-0 ' + emptyClass + '">' +
+                    '<span class="text-xl leading-none mb-1">' + c.medal + '</span>' +
+                    '<img src="' + avatar + '" alt="อันดับ ' + rank + '" class="' + c.avatar + ' rounded-full object-cover border-4 bg-slate-800">' +
+                    '<p class="text-[11px] font-bold mt-1 w-full text-center truncate">' + name + '</p>' +
+                    '<p class="text-[10px] text-amber-300 font-semibold mb-1">' + score + ' แต้ม</p>' +
+                    '<div class="podium-block ' + c.height + ' w-full rounded-t-2xl bg-gradient-to-b ' + c.color + ' flex items-start justify-center pt-2 shadow-lg">' +
+                    '<span class="text-3xl font-black ' + c.text + '">' + rank + '</span>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // =====================================================================
+        // 👥 นับจำนวนผู้เข้าเว็บไซต์ (นับเครื่องที่ไม่ซ้ำกัน)
+        // =====================================================================
+        function getVisitorId() {
+            let id = null;
+            try {
+                id = localStorage.getItem('ktowin_visitor_id');
+                if (!id) {
+                    id = (window.crypto && crypto.randomUUID)
+                        ? crypto.randomUUID()
+                        : 'v-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+                    localStorage.setItem('ktowin_visitor_id', id);
+                }
+            } catch (e) {
+                id = 'v-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+            }
+            return id;
+        }
+
+        async function trackVisitor() {
+            try {
+                await supabaseClient
+                    .from('site_visitors')
+                    .upsert({ visitor_id: getVisitorId() }, { onConflict: 'visitor_id', ignoreDuplicates: true });
+            } catch (err) {
+                console.error('บันทึกผู้เข้าชมไม่สำเร็จ:', err);
+            }
+            await loadVisitorCount();
+        }
+
+        async function loadVisitorCount() {
+            try {
+                const { count, error } = await supabaseClient
+                    .from('site_visitors')
+                    .select('*', { count: 'exact', head: true });
+                if (error) throw error;
+                document.getElementById('visitor-count').textContent = (count || 0).toLocaleString('th-TH');
+            } catch (err) {
+                console.error('โหลดจำนวนผู้เข้าชมไม่สำเร็จ:', err);
+            }
+        }
+
+        // =====================================================================
+        // 🚀 เริ่มทำงานตอนเปิดหน้าเว็บ
+        // =====================================================================
+        async function initApp() {
+            // นับผู้เข้าเว็บไซต์
+            trackVisitor();
+
+            // ถ้ามี session เดิมอยู่ ให้เข้าหน้าหลักเลยโดยไม่ต้องล็อกอินซ้ำ
+            try {
+                const { data } = await supabaseClient.auth.getSession();
+                if (data && data.session) {
+                    currentUser = data.session.user;
+                    await switchToDashboard();
+                    await loadProfile();
+                    await loadLeaderboard();
+                }
+            } catch (err) {
+                console.error('ตรวจสอบ session ไม่สำเร็จ:', err);
+            }
+        }
+
+        initApp();
+    </script>
+</body>
+</html>
