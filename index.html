@@ -1058,5 +1058,57 @@
 
         initApp();
     </script>
+
+
+
+
+
+
+<!-- ===== Script Generator Widget : HTML ===== -->
+<!-- วางก่อนปิด </body> -->
+
+<!-- ปุ่มวงกลมมุมขวาล่าง -->
+<button id="sgOpenBtn" class="sg-fab" title="เปิด Script Generator" aria-label="เปิด Script Generator">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+</button>
+
+<!-- หน้าต่าง popup -->
+<div id="sgModal" class="sg-overlay">
+  <div class="sg-card">
+
+    <div class="sg-header">
+      <div>
+        <h3 class="sg-title">สร้างสคริปต์ใช้งาน</h3>
+        <p class="sg-sub">ดึงข้อมูลสคริปต์จากระบบ Render Backend</p>
+      </div>
+      <button id="sgCloseBtn" class="sg-close" aria-label="ปิด">&times;</button>
+    </div>
+
+    <div class="sg-body">
+      <div class="sg-actions">
+        <button id="sgGenerateBtn" class="sg-btn sg-btn-primary">
+          <span id="sgGenerateText">สร้างสคริปต์</span>
+        </button>
+        <button id="sgCopyBtn" class="sg-btn sg-btn-secondary">
+          <span id="sgCopyText">คัดลอกสคริปต์</span>
+        </button>
+      </div>
+
+      <div class="sg-codebar">
+        <span>script-output.js</span>
+        <span id="sgStatus">พร้อมดึงข้อมูล</span>
+      </div>
+      <pre id="sgCode" class="sg-code"><code>// กดปุ่ม "สร้างสคริปต์" เพื่อรับข้อมูลจาก Render Backend</code></pre>
+    </div>
+
+  </div>
+</div>
+    
+
+
+
+
+
+    
 </body>
 </html>
