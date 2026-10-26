@@ -92,6 +92,198 @@
         #dashboard-view {
             -webkit-overflow-scrolling: touch;
         }
+
+
+
+
+/* ===== Script Generator Widget : CSS =====
+   ไม่ต้องใช้ Tailwind / FontAwesome — class ทั้งหมดขึ้นต้นด้วย sg- เพื่อไม่ชนกับ CSS เว็บของคุณ */
+
+.sg-fab, .sg-overlay, .sg-overlay * {
+  box-sizing: border-box;
+  font-family: 'Prompt', 'Inter', system-ui, sans-serif;
+}
+
+/* ---------- ปุ่มวงกลมมุมขวาล่าง ---------- */
+.sg-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9998;
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(to top right, #16a34a, #22c55e);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .4);
+  transition: transform .3s;
+  animation: sg-pulse 3s infinite ease-in-out;
+}
+.sg-fab:hover  { transform: scale(1.1); }
+.sg-fab:active { transform: scale(.95); }
+
+@keyframes sg-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, .4); }
+  50%      { box-shadow: 0 0 25px rgba(34, 197, 94, .8); }
+}
+
+/* ---------- พื้นหลังมืด + หน้าต่าง ---------- */
+.sg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, .7);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.sg-overlay.sg-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sg-card {
+  width: 100%;
+  max-width: 672px;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, .5);
+  overflow: hidden;
+  color: #f3f4f6;
+  transform: scale(.95);
+  transition: transform .3s;
+}
+.sg-overlay.sg-open .sg-card { transform: scale(1); }
+
+/* ---------- Header ---------- */
+.sg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(31, 41, 55, .8);
+}
+.sg-title { margin: 0; font-size: 18px; font-weight: 600; color: #fff; line-height: 1.3; }
+.sg-sub   { margin: 2px 0 0; font-size: 12px; color: #9ca3af; }
+
+.sg-close {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.sg-close:hover { background: #1f2937; color: #fff; }
+
+/* ---------- Body ---------- */
+.sg-body { padding: 24px; }
+
+.sg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sg-btn {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.sg-btn:active { transform: scale(.95); }
+.sg-btn:disabled { opacity: .75; cursor: not-allowed; }
+
+.sg-btn-primary {
+  border: 0;
+  background: #16a34a;
+  color: #fff;
+  box-shadow: 0 8px 16px rgba(22, 163, 74, .2);
+}
+.sg-btn-primary:hover:not(:disabled) { background: #22c55e; }
+
+.sg-btn-secondary {
+  border: 1px solid #374151;
+  background: #1f2937;
+  color: #e5e7eb;
+}
+.sg-btn-secondary:hover { background: #374151; }
+
+@media (min-width: 640px) {
+  .sg-btn { flex: 0 0 auto; }
+}
+
+/* ---------- กล่องแสดงโค้ด ---------- */
+.sg-codebar {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #030712;
+  border: 1px solid #1f2937;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  font: 12px 'Fira Code', Consolas, monospace;
+  color: #6b7280;
+}
+#sgStatus.sg-warn  { color: #facc15; }
+#sgStatus.sg-ok    { color: #34d399; }
+#sgStatus.sg-error { color: #f87171; }
+
+.sg-code {
+  margin: 0;
+  width: 100%;
+  height: 224px;
+  padding: 16px;
+  background: #030712;
+  color: #d1d5db;
+  border: 1px solid #1f2937;
+  border-radius: 0 0 12px 12px;
+  font: 14px 'Fira Code', Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow: auto;
+}
+.sg-code::-webkit-scrollbar       { width: 8px; height: 8px; }
+.sg-code::-webkit-scrollbar-track { background: #111827; border-radius: 4px; }
+.sg-code::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+
+/* ---------- ไอคอนหมุนตอนโหลด ---------- */
+.sg-spin {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, .35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sg-rot .7s linear infinite;
+}
+@keyframes sg-rot { to { transform: rotate(360deg); } }
+                              
+
+
+        
     </style>
 </head>
 <body id="main-bg" class="bg-slate-950 min-h-screen flex items-center justify-center p-4 text-white transition-colors duration-700 overflow-hidden relative">
