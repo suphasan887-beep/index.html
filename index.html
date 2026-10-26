@@ -1309,7 +1309,7 @@ const response = await fetch(RENDER_BACKEND_URL, {
     'Authorization': 'Bearer ' + token
   }
 });
-if (!response.ok) throw new Error('เกิดข้อผิดพลาดจากเซิร์ฟเวอร์');
+if (!response.ok) throw new Error('เซิร์ฟเวอร์ตอบรหัส ' + response.status);
 const data = await response.json();
 currentScriptCode = data.script || data.result;
 
