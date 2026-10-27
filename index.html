@@ -1446,28 +1446,18 @@ currentScriptCode = data.loaderScript;
 
 
 
-
-        
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
+document.getElementById('shop-box').addEventListener('click', async function (e) {
+    e.preventDefault();
+    let url = this.getAttribute('href');
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+        if (data && data.session) {
+            url += '#at=' + encodeURIComponent(data.session.access_token);
+        }
+    } catch (err) { console.error(err); }
+    window.location.href = url;
+});
     
-
-
-
-
         
         
     </script>
