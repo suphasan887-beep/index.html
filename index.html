@@ -1446,15 +1446,18 @@ currentScriptCode = data.loaderScript;
 
 
 
-document.getElementById('shop-box').addEventListener('click', async function (e) {
+document.addEventListener('click', async function (e) {
+    const box = e.target.closest ? e.target.closest('#shop-box') : null;
+    if (!box) return;
     e.preventDefault();
-    let url = this.getAttribute('href');
+    let url = box.getAttribute('href');
+    let token = null;
     try {
         const { data } = await supabaseClient.auth.getSession();
-        if (data && data.session) {
-            url += '#at=' + encodeURIComponent(data.session.access_token);
-        }
+        token = data && data.session ? data.session.access_token : null;
     } catch (err) { console.error(err); }
+    if (!token) { alert('DEBUG A: หน้าหลักหา session ไม่เจอ ลองออกจากระบบแล้วล็อกอินใหม่'); }
+    else { url += '#at=' + encodeURIComponent(token); }
     window.location.href = url;
 });
     
