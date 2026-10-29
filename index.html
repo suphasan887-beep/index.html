@@ -1460,7 +1460,19 @@ currentScriptCode = data.loaderScript;
 });
         
 
-
+document.addEventListener('click', async function (e) {
+    const box = e.target.closest ? e.target.closest('#fish-box') : null;
+    if (!box) return;
+    e.preventDefault();
+    let url = box.getAttribute('href').replace(/\/+$/, '') + '/';
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+        const token = data && data.session ? data.session.access_token : null;
+        if (!token) { alert('กรุณาเข้าสู่ระบบก่อนเล่นเกม'); return; }
+        url += '#at=' + encodeURIComponent(token);
+    } catch (err) { console.error(err); alert('เปิดเกมไม่สำเร็จ ลองใหม่อีกครั้ง'); return; }
+    window.location.href = url;
+});
 
 
 
