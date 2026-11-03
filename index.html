@@ -1428,7 +1428,51 @@ async function redeemCode() {
 
 
 
+// ===== เติมเงินด้วยซอง TrueMoney =====
+const TOPUP_API_BASE = 'https://true-munny-give.onrender.com';
 
+async function loadMoney() {
+    try {
+        const token = await getAccessToken();
+        if (!token) return;
+        const res = await fetch(TOPUP_API_BASE.replace(/\/+$/, '') + '/api/my-money', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const json = await res.json();
+        if (res.ok) document.getElementById('money-balance').textContent = Number(json.money_balance || 0).toLocaleString('th-TH');
+    } catch (err) { console.error(err); }
+}
+
+async function redeemTrueMoney() {
+    const input = document.getElementById('tw-link-input');
+    const status = document.getElementById('tw-status');
+    const btn = document.getElementById('tw-btn');
+    const link = input.value.trim();
+    if (!link) { status.textContent = 'กรุณาวางลิงก์ซองก่อน'; return; }
+
+    btn.disabled = true;
+    btn.classList.add('opacity-60');
+    status.textContent = 'กำลังรับซอง... (ครั้งแรกอาจใช้เวลา 30-60 วินาที)';
+    try {
+        const token = await getAccessToken();
+        if (!token) throw new Error('กรุณาเข้าสู่ระบบใหม่อีกครั้ง');
+        const res = await fetch(TOPUP_API_BASE.replace(/\/+$/, '') + '/api/redeem-truemoney', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ link: link })
+        });
+        const json = await res.json().catch(function () { return {}; });
+        if (!res.ok) throw new Error(json.error || 'เติมเงินไม่สำเร็จ');
+        status.textContent = json.message || 'เติมเงินสำเร็จ ✅';
+        input.value = '';
+        await loadMoney();
+    } catch (err) {
+        status.textContent = err.message || 'เติมเงินไม่สำเร็จ';
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('opacity-60');
+    }
+        }
         
 
 
