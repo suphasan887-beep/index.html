@@ -1542,7 +1542,24 @@ document.addEventListener('click', async function (e) {
     window.location.href = url;
 });
     
-        
+
+// ปุ่มเบอร์โทร: คัดลอกเบอร์ แล้วเปิดหน้าโทรพร้อมเบอร์
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest ? e.target.closest('#phone-btn') : null;
+    if (!btn) return;
+    e.preventDefault();
+    const phone = btn.getAttribute('data-phone');
+    const openDialer = function () { window.location.href = 'tel:' + phone; };
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(phone).then(openDialer, openDialer);
+            return;
+        }
+    } catch (err) {}
+    openDialer();
+});
+
+                    
         
     </script>
 
