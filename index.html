@@ -425,16 +425,70 @@
             </div>
 
             
-<div class="mt-4">
-    <a id="shop-box" href="https://nongchang887-prog.github.io/index.html/?from=main"
-       class="block w-32 h-32 rounded-2xl overflow-hidden border border-white/10 bg-slate-900/70 active:scale-95 transition">
-        
-        <img src="https://i.ibb.co/TMhMbrFV/1793086227146.jpg" alt="ร้านค้า" class="w-full h-full object-cover" onerror="this.style.display='none'">
-    </a>
-    <p class="w-32 mt-1.5 text-center text-xs font-bold text-amber-300 leading-tight">ร้านค้าพรีเมียม7</p>
+<div class="mt-4 flex items-start gap-3">
+
+    <!-- ===== กล่องร้านค้า (ของเดิม) ===== -->
+    <div class="shrink-0">
+        <a id="shop-box" href="https://nongchang887-prog.github.io/index.html/?from=main"
+           class="block w-32 h-32 rounded-2xl overflow-hidden border border-white/10 bg-slate-900/70 active:scale-95 transition">
+            <img src="https://i.ibb.co/TMhMbrFV/1793086227146.jpg" alt="ร้านค้า" class="w-full h-full object-cover" onerror="this.style.display='none'">
+        </a>
+        <p class="w-32 mt-1.5 text-center text-xs font-bold text-amber-300 leading-tight">ร้านค้าพรีเมียม7</p>
+    </div>
+
+    <!-- ===== ไอคอนโซเชียล (4 คอลัมน์ x 2 แถว) ===== -->
+    <div class="flex-1 grid grid-cols-4 gap-2 content-start pt-0.5">
+
+        <!-- Facebook: เอาลิงก์เฟซใส่ตรงนี้ (แก้ใน href) -->
+        <a href="https://www.facebook.com/ใส่ลิงก์เฟซตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-[#1877F2] flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/facebook/ffffff" alt="Facebook" class="w-1/2 h-1/2">
+        </a>
+
+        <!-- Discord: เอาลิงก์ช่อง Discord ของเราใส่ตรงนี้ (แก้ใน href) -->
+        <a href="https://discord.gg/ใส่ลิงก์ดิสคอร์ดตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-[#5865F2] flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" class="w-1/2 h-1/2">
+        </a>
+
+        <!-- เบอร์โทร: กดแล้วคัดลอกเบอร์ + เปิดหน้าโทรพร้อมเบอร์ (แก้เบอร์ใน data-phone) -->
+        <a href="#" id="phone-btn" data-phone="0812345678"
+           class="aspect-square rounded-xl bg-white flex items-center justify-center active:scale-95 transition">
+            <svg viewBox="0 0 24 24" class="w-1/2 h-1/2" fill="#0f172a"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.1.37 2.3.57 3.6.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+        </a>
+
+        <!-- Telegram: เอาลิงก์เทเลแกรมใส่ตรงนี้ (แก้ใน href) -->
+        <a href="https://t.me/ใส่ชื่อเทเลแกรมตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-[#26A5E4] flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/telegram/ffffff" alt="Telegram" class="w-1/2 h-1/2">
+        </a>
+
+        <!-- LINE: เอาลิงก์หน้าแอดเพื่อนไลน์ใส่ตรงนี้ เช่น https://line.me/ti/p/~ไอดีไลน์ (แก้ใน href) -->
+        <a href="https://line.me/ti/p/~ใส่ไอดีไลน์ตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-[#06C755] flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/line/ffffff" alt="LINE" class="w-1/2 h-1/2">
+        </a>
+
+        <!-- TikTok: เอาลิงก์ TikTok ของเราใส่ตรงนี้ กดแล้วไปหน้า TikTok เรา (แก้ใน href) -->
+        <a href="https://www.tiktok.com/@ใส่ชื่อติ๊กต็อกตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-black flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok" class="w-1/2 h-1/2">
+        </a>
+
+        <!-- Instagram: เอาลิงก์ Instagram ใส่ตรงนี้ (แก้ใน href) -->
+        <a href="https://www.instagram.com/ใส่ชื่ออินสตาแกรมตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" class="w-1/2 h-1/2">
+        </a>
+
+        <!-- YouTube: เอาลิงก์ YouTube ใส่ตรงนี้ (แก้ใน href) -->
+        <a href="https://www.youtube.com/@ใส่ลิงก์ยูทูบตรงนี้" target="_blank" rel="noopener"
+           class="aspect-square rounded-xl bg-[#FF0000] flex items-center justify-center active:scale-95 transition">
+            <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube" class="w-1/2 h-1/2">
+        </a>
+
+    </div>
 </div>
-  
-        </div>
 
            
         </div>
