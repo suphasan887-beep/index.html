@@ -607,7 +607,21 @@
         </div>
     </div>
 
+<div class="text-left bg-slate-900/70 border border-white/10 rounded-2xl p-3 space-y-2">
+    <h4 class="text-sm font-bold text-emerald-300">🧧 เติมเงินด้วยซอง TrueMoney</h4>
+    <p class="text-[11px] text-slate-400">วางลิงก์ซองเพื่อเติมเงิน (1 บาท = 1 แต้ม)</p>
+    <input type="text" id="tw-link-input" placeholder="วางลิงก์ซอง gift.truemoney.com ที่นี่" autocomplete="off" class="w-full px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+    <button id="tw-btn" onclick="redeemTrueMoney()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs font-bold transition active:scale-95">
+        เติมเงินด้วยซอง
+    </button>
+    <p id="tw-status" class="text-[11px] text-slate-400 min-h-[14px]"></p>
+</div>
 
+
+
+
+
+    
     <!-- ================= JAVASCRIPT & SERVER/SUPABASE CONFIG ================= -->
     <script>
         // =========================================================================
