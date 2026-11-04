@@ -526,7 +526,16 @@ a.aspect-square {
          class="block w-full h-auto object-cover"
          onerror="this.style.display='none'">
 </a>
-           
+
+
+
+            <!-- ===== แบนเนอร์ ร้านขายรหัส Roblox ===== -->
+<a id="roblox-banner" href="ใส่ลิงก์ร้านใหม่ตรงนี้"
+   class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 bg-slate-900/60 shadow-lg active:scale-95 transition">
+    <img src="ใส่ลิงก์รูปแบนเนอร์ตรงนี้.jpg" alt="ร้านขายรหัส Roblox"
+         class="block w-full h-auto object-cover"
+         onerror="this.style.display='none'">
+</a>
         </div>
     </div>
 
@@ -1632,7 +1641,7 @@ document.addEventListener('click', async function (e) {
 
         // แบนเนอร์ จำหน่ายไอดีเกม: กดแล้วส่งโทเค็นไปกับลิงก์
 document.addEventListener('click', async function (e) {
-    const banner = e.target.closest ? e.target.closest('#game-id-banner') : null;
+    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner') : null;
     if (!banner) return;
     e.preventDefault();
     let url = banner.getAttribute('href');
