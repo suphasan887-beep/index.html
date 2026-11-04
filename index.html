@@ -1620,6 +1620,22 @@ document.addEventListener('click', async function (e) {
     else { url += '#at=' + encodeURIComponent(token); }
     window.location.href = url;
 });
+
+
+
+        // แบนเนอร์ จำหน่ายไอดีเกม: กดแล้วส่งโทเค็นไปกับลิงก์
+document.addEventListener('click', async function (e) {
+    const banner = e.target.closest ? e.target.closest('#game-id-banner') : null;
+    if (!banner) return;
+    e.preventDefault();
+    let url = banner.getAttribute('href');
+    try {
+        const { data } = await supabaseClient.auth.getSession();
+        const token = data && data.session ? data.session.access_token : null;
+        if (token) url += '#at=' + encodeURIComponent(token);
+    } catch (err) { console.error(err); }
+    window.location.href = url;
+});
     
 
 // ปุ่มเบอร์โทร: คัดลอกเบอร์ แล้วเปิดหน้าโทรพร้อมเบอร์
