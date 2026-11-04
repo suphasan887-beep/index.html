@@ -1019,7 +1019,7 @@ function stopInbox() {
             currentUser = null;
             currentProfile = null;
             if (leaderboardTimer) clearInterval(leaderboardTimer);
-
+stopInbox();
             closeProfile();
 
             document.getElementById('login-email').value = '';
