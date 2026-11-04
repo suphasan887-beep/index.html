@@ -307,6 +307,17 @@ a.aspect-square {
     border-radius: 1rem !important;
     box-sizing: border-box;
 }
+
+
+
+        /* บล็อกเคอร์เซอร์กระพริบและการคลุมดำเลือกข้อความทั้งหมด (ยกเว้นช่องกรอก UID) */
+body *:not(#user-uid):not(input):not(textarea) {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;         /* Standard */
+    -webkit-touch-callout: none; /* ป้องกันการกดค้างบนมือถือ */
+        }
     </style>
 </head>
 <body id="main-bg" class="bg-slate-950 min-h-screen flex items-center justify-center p-4 text-white transition-colors duration-700 overflow-hidden relative">
