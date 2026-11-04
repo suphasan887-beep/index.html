@@ -417,6 +417,11 @@ a.aspect-square {
                     <span class="text-sm">👥</span>
                     <span class="text-[11px] text-slate-300">ผู้เข้าเว็บไซต์</span>
                     <span id="visitor-count" class="text-sm font-extrabold text-amber-300">0</span>
+                    <div class="flex items-center gap-2">
+<button onclick="openInbox()" aria-label="กล่องจดหมาย" class="relative w-10 h-10 flex items-center justify-center bg-slate-900/70 glass-panel border border-white/10 rounded-full active:scale-95 transition">
+    <span class="text-lg">✉️</span>
+    <span id="inbox-dot" class="hidden absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center border-2 border-slate-900"></span>
+</button>
                 </div>
             </div>
 
