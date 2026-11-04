@@ -1868,6 +1868,49 @@ document.addEventListener('click', function (e) {
     openDialer();
 });
 
+
+
+        // 🎬 ละอองแสงลอยในหน้าหลัก
+(function () {
+    const cv = document.getElementById('cine-canvas');
+    if (!cv) return;
+    const ctx = cv.getContext('2d');
+    let W, H, dots = [];
+    function resize() {
+        W = cv.width = innerWidth;
+        H = cv.height = innerHeight;
+        dots = Array.from({ length: 38 }, function () {
+            return {
+                x: Math.random() * W, y: Math.random() * H,
+                r: Math.random() * 1.8 + .4,
+                v: Math.random() * .35 + .12,
+                a: Math.random() * .5 + .2,
+                p: Math.random() * 6.28
+            };
+        });
+    }
+    resize();
+    addEventListener('resize', resize);
+    function frame() {
+        const view = document.getElementById('dashboard-view');
+        if (view && !view.classList.contains('hidden')) {
+            ctx.clearRect(0, 0, W, H);
+            dots.forEach(function (d) {
+                d.y -= d.v; d.p += .02;
+                d.x += Math.sin(d.p) * .25;
+                if (d.y < -5) { d.y = H + 5; d.x = Math.random() * W; }
+                ctx.beginPath();
+                ctx.fillStyle = 'rgba(255,225,160,' + (d.a * (.6 + Math.sin(d.p) * .4)) + ')';
+                ctx.shadowColor = 'rgba(255,200,100,.8)';
+                ctx.shadowBlur = 8;
+                ctx.arc(d.x, d.y, d.r, 0, 6.28);
+                ctx.fill();
+            });
+        }
+        requestAnimationFrame(frame);
+    }
+    frame();
+})();
                     
         
     </script>
