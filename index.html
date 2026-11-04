@@ -887,6 +887,126 @@ a.aspect-square {
             leaderboardTimer = setInterval(loadLeaderboard, 30000);
         }
 
+
+
+let inboxMessages = [];
+let inboxTimer = null;
+let inboxChannel = null;
+
+function safeUrl(u) {
+    try {
+        const x = new URL(String(u));
+        return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : null;
+    } catch (e) { return null; }
+}
+
+function updateInboxDot() {
+    const dot = document.getElementById('inbox-dot');
+    if (!dot) return;
+    const unread = inboxMessages.filter(m => !m.is_read).length;
+    if (unread > 0) {
+        dot.textContent = unread > 9 ? '9+' : String(unread);
+        dot.classList.remove('hidden');
+    } else {
+        dot.classList.add('hidden');
+    }
+}
+
+async function loadInbox() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('inbox_messages')
+            .select('id, source, message, link, is_read, created_at')
+            .order('created_at', { ascending: true })
+            .limit(200);
+        if (error) throw error;
+        inboxMessages = data || [];
+        updateInboxDot();
+        if (!document.getElementById('inbox-modal').classList.contains('hidden')) renderInbox(false);
+    } catch (err) {
+        console.error('โหลดกล่องจดหมายไม่สำเร็จ:', err);
+    }
+}
+
+function renderInbox(scrollBottom) {
+    const list = document.getElementById('inbox-list');
+    if (!inboxMessages.length) {
+        list.innerHTML = '<p class="text-center text-sm text-slate-400 py-10">ยังไม่มีข้อความ</p>';
+        return;
+    }
+    list.innerHTML = inboxMessages.map(function (m) {
+        const link = safeUrl(m.link);
+        const time = new Date(m.created_at).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
+        const text = m.message ? '<p class="text-sm text-slate-100 whitespace-pre-wrap break-words">' + escapeHtml(m.message) + '</p>' : '';
+        const openBtn = link
+            ? '<a href="' + escapeHtml(link) + '" target="_blank" rel="noopener noreferrer" class="flex-1 text-center py-2 rounded-xl bg-emerald-500 text-white text-sm font-bold active:scale-95">🔗 เปิดลิงก์</a>'
+            : '';
+        return '<div class="rounded-2xl bg-slate-800/80 border border-white/10 p-3 space-y-2">' +
+            '<div class="flex items-center justify-between text-[11px] text-slate-400">' +
+                '<span class="font-semibold text-amber-300 truncate">' + escapeHtml(m.source || 'ไม่ระบุที่มา') + '</span>' +
+                '<span>' + escapeHtml(time) + '</span></div>' +
+            text +
+            '<div class="flex gap-2">' + openBtn +
+                '<button onclick="deleteInboxMessage(\'' + m.id + '\')" aria-label="ลบ" class="' + (link ? 'w-12' : 'flex-1') + ' py-2 rounded-xl bg-red-500/90 text-white text-sm font-bold active:scale-95">🗑️' + (link ? '' : ' ลบ') + '</button>' +
+            '</div></div>';
+    }).join('');
+    if (scrollBottom) list.scrollTop = list.scrollHeight;
+}
+
+async function openInbox() {
+    document.getElementById('inbox-modal').classList.remove('hidden');
+    renderInbox(true);
+    const unreadIds = inboxMessages.filter(m => !m.is_read).map(m => m.id);
+    if (unreadIds.length) {
+        inboxMessages.forEach(m => { m.is_read = true; });
+        updateInboxDot();
+        try {
+            await supabaseClient.from('inbox_messages').update({ is_read: true }).in('id', unreadIds);
+        } catch (err) { console.error(err); }
+    }
+}
+
+function closeInbox() {
+    document.getElementById('inbox-modal').classList.add('hidden');
+}
+
+async function deleteInboxMessage(id) {
+    try {
+        const { error } = await supabaseClient.from('inbox_messages').delete().eq('id', id);
+        if (error) throw error;
+        inboxMessages = inboxMessages.filter(m => String(m.id) !== String(id));
+        renderInbox(false);
+        updateInboxDot();
+    } catch (err) {
+        console.error('ลบข้อความไม่สำเร็จ:', err);
+        alert('ลบข้อความไม่สำเร็จ');
+    }
+}
+
+function startInbox() {
+    stopInbox();
+    loadInbox();
+    inboxTimer = setInterval(loadInbox, 15000);
+    try {
+        inboxChannel = supabaseClient
+            .channel('inbox-live')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inbox_messages' }, function () { loadInbox(); })
+            .subscribe();
+    } catch (err) { console.error(err); }
+}
+
+function stopInbox() {
+    if (inboxTimer) { clearInterval(inboxTimer); inboxTimer = null; }
+    if (inboxChannel) { try { supabaseClient.removeChannel(inboxChannel); } catch (e) {} inboxChannel = null; }
+    inboxMessages = [];
+    updateInboxDot();
+    closeInbox();
+}
+
+
+
+
+        
         // 🔙 ฟังก์ชันออกจากระบบ (กลับมาหน้าล็อกอิน)
         async function handleLogout() {
             try {
