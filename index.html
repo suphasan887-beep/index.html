@@ -885,6 +885,7 @@ a.aspect-square {
             // รีเฟรชอันดับอัตโนมัติทุก 30 วินาที
             if (leaderboardTimer) clearInterval(leaderboardTimer);
             leaderboardTimer = setInterval(loadLeaderboard, 30000);
+            startInbox();
         }
 
 
