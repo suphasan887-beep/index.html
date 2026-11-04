@@ -408,23 +408,24 @@ a.aspect-square {
 
             <!-- ===== แถบด้านบน: รูปโปรไฟล์ + ชื่อ + จำนวนผู้เข้าเว็บ ===== -->
             <div class="flex items-center justify-between pt-4">
-                <button onclick="openProfile()" class="flex items-center gap-2 bg-slate-900/70 glass-panel border border-white/10 rounded-full pl-1 pr-3 py-1 active:scale-95 transition">
-                    <img id="top-avatar" src="" alt="โปรไฟล์" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400 bg-slate-800">
-                    <span id="top-username" class="text-xs font-semibold max-w-[110px] truncate">...</span>
-                </button>
+    <button onclick="openProfile()" class="flex items-center gap-2 bg-slate-900/70 glass-panel border border-white/10 rounded-full pl-1 pr-3 py-1 active:scale-95 transition">
+        <img id="top-avatar" src="" alt="โปรไฟล์" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400 bg-slate-800">
+        <span id="top-username" class="text-xs font-semibold max-w-[110px] truncate">...</span>
+    </button>
 
-                <div class="flex items-center gap-1.5 bg-slate-900/70 glass-panel border border-white/10 rounded-full px-3 py-2">
-                    <span class="text-sm">👥</span>
-                    <span class="text-[11px] text-slate-300">ผู้เข้าเว็บไซต์</span>
-                    <span id="visitor-count" class="text-sm font-extrabold text-amber-300">0</span>
-                    <div class="flex items-center gap-2">
-<button onclick="openInbox()" aria-label="กล่องจดหมาย" class="relative w-10 h-10 flex items-center justify-center bg-slate-900/70 glass-panel border border-white/10 rounded-full active:scale-95 transition">
-    <span class="text-lg">✉️</span>
-    <span id="inbox-dot" class="hidden absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center border-2 border-slate-900"></span>
-</button>
-                </div>
+    <div class="flex items-center gap-2">
+        <button onclick="openInbox()" aria-label="กล่องจดหมาย" class="relative w-10 h-10 flex items-center justify-center bg-slate-900/70 glass-panel border border-white/10 rounded-full active:scale-95 transition">
+            <span class="text-lg">✉️</span>
+            <span id="inbox-dot" class="hidden absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-extrabold flex items-center justify-center border-2 border-slate-900"></span>
+        </button>
+
+        <div class="flex items-center gap-1.5 bg-slate-900/70 glass-panel border border-white/10 rounded-full px-3 py-2">
+            <span class="text-sm">👥</span>
+            <span class="text-[11px] text-slate-300">ผู้เข้าเว็บไซต์</span>
+            <span id="visitor-count" class="text-sm font-extrabold text-amber-300">0</span>
+        </div>
+    </div>
             </div>
-
 
 
             <!-- ===== โลโก้ร้าน (ขอบจางเบลอ ไม่เห็นเส้นตัด) ===== -->
