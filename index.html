@@ -833,6 +833,37 @@ a[class*="active:scale-95"] {
             }
         }
 
+
+
+        // 🔊 เสียงต้อนรับหลังล็อกอิน
+const WELCOME_TEXT = 'ยินดีต้อนรับเข้าสู่เว็บไซต์ ซาดีน่า ช็อป';
+
+// เรียกตอนกดปุ่ม เพื่อให้เบราว์เซอร์อนุญาตให้เล่นเสียง
+function primeSpeech() {
+    try {
+        if (!('speechSynthesis' in window)) return;
+        const u = new SpeechSynthesisUtterance(' ');
+        u.volume = 0;
+        window.speechSynthesis.speak(u);
+    } catch (e) {}
+}
+
+function speakWelcome() {
+    try {
+        if (!('speechSynthesis' in window)) return;
+        const synth = window.speechSynthesis;
+        synth.cancel();
+        const u = new SpeechSynthesisUtterance(WELCOME_TEXT);
+        u.lang = 'th-TH';
+        u.volume = 1;      // ดังสุด
+        u.rate = 0.95;     // ความเร็วพูด
+        u.pitch = 1;
+        const th = synth.getVoices().find(v => /^th/i.test(v.lang));
+        if (th) u.voice = th;
+        synth.speak(u);
+    } catch (e) { console.error(e); }
+}
+
         // ฟังก์ชันรองรับการกดปุ่มเข้าสู่ระบบ
         async function handleLogin() {
             // 🔧 แก้: ใช้ชื่อผู้ใช้แทนอีเมล แล้วแปลงเป็นอีเมลปลอมเอง
