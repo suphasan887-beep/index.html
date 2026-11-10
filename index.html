@@ -1549,7 +1549,7 @@ stopInbox();
         // วาดแท่นอันดับ (ลำดับแสดงผล: 2 | 1 | 3)
         function renderPodium(users) {
             const podium = document.getElementById('podium');
-
+if (!podium) return;  
             const config = {
                 1: { height: 'h-36', color: 'from-amber-300 to-amber-500', text: 'text-amber-950', avatar: 'w-20 h-20 border-amber-300 rank-1-glow', medal: '👑' },
                 2: { height: 'h-24', color: 'from-slate-200 to-slate-400', text: 'text-slate-900', avatar: 'w-16 h-16 border-slate-300', medal: '🥈' },
