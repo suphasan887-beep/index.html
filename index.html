@@ -364,6 +364,23 @@ body *:not(#user-uid):not(input):not(textarea) {
 @media (prefers-reduced-motion: reduce) {
   #dashboard-view *, #cine-fx * { animation: none !important; }
 }
+
+        /* ✨ เอาเมาส์ชี้แล้วนูนขึ้น: ครอบคลุมกล่องร้านค้า ไอคอนโซเชียล และแบนเนอร์ทุกอัน
+   (ทุกปุ่มที่ใช้คลาส active:scale-95 เหมือนของเดิม รวมถึงที่เพิ่มในอนาคต) */
+a[class*="active:scale-95"] {
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+@media (hover: hover) {
+    a[class*="active:scale-95"]:hover {
+        transform: translateY(-6px) scale(1.06);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45);
+        position: relative;
+        z-index: 5;
+    }
+    a[class*="active:scale-95"]:hover:active {
+        transform: scale(0.95); /* กดแล้วยุบลงเหมือนเดิม */
+    }
+}
     </style>
 </head>
 <body id="main-bg" class="bg-slate-950 min-h-screen flex items-center justify-center p-4 text-white transition-colors duration-700 overflow-hidden relative">
