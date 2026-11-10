@@ -866,6 +866,7 @@ function speakWelcome() {
 
         // ฟังก์ชันรองรับการกดปุ่มเข้าสู่ระบบ
         async function handleLogin() {
+            primeSpeech();
             // 🔧 แก้: ใช้ชื่อผู้ใช้แทนอีเมล แล้วแปลงเป็นอีเมลปลอมเอง
             const username = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
@@ -893,6 +894,7 @@ function speakWelcome() {
                 currentUser = data.user;
 
                 // บันทึกประวัติ + เพิ่มคะแนนการใช้งาน แล้วสลับไปหน้าหลักทันที
+                speakWelcome();
                 await switchToDashboard();
                 await logActivity('เข้าสู่ระบบ');
                 await loadProfile();
