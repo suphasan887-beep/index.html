@@ -1881,7 +1881,7 @@ document.addEventListener('click', async function (e) {
 
         // แบนเนอร์ จำหน่ายไอดีเกม: กดแล้วส่งโทเค็นไปกับลิงก์
 document.addEventListener('click', async function (e) {
-    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner') : null;
+    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner') : null;
     if (!banner) return;
     e.preventDefault();
     let url = banner.getAttribute('href');
