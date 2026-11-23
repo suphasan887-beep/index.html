@@ -607,6 +607,17 @@ a[class*="active:scale-95"] {
          class="block w-full h-auto object-cover"
          onerror="this.style.display='none'">
 </a>
+
+
+<!-- ===== แบนเนอร์ คลังแอป & เกมหายาก ===== -->
+<a id="apps-banner" href="https://bananaeze777-cmd.github.io/index.html/"
+   class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 bg-slate-900/60 shadow-lg active:scale-95 transition">
+    <img src="ใส่ลิงก์รูปปกที่นี่" alt="คลังแอป & เกมหายาก"
+         class="block w-full object-cover" style="aspect-ratio:11/6"
+         onerror="this.style.display='none'">
+</a>
+
+            
             <!-- ===== แบนเนอร์ แคลนฟรีไฟร์ ===== -->
 <a id="clan-banner" href="https://eroomaji-gif.github.io/index.html/"
    class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 bg-slate-900/60 shadow-lg active:scale-95 transition">
@@ -1881,7 +1892,7 @@ document.addEventListener('click', async function (e) {
 
         // แบนเนอร์ จำหน่ายไอดีเกม: กดแล้วส่งโทเค็นไปกับลิงก์
 document.addEventListener('click', async function (e) {
-    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner') : null;
+    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner, #apps-banner') : null;
     if (!banner) return;
     e.preventDefault();
     let url = banner.getAttribute('href');
