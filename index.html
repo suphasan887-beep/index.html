@@ -617,6 +617,16 @@ a[class*="active:scale-95"] {
          onerror="this.style.display='none'">
 </a>
 
+            <a id="tools-banner" href="https://frodfreefireed-pixel.github.io/index.html/"
+   class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 shadow-lg active:scale-95 transition"
+   style="aspect-ratio:11/6;background:linear-gradient(135deg,#312e81 0%,#6d28d9 55%,#be185d 100%)">
+    <div class="w-full h-full flex flex-col items-center justify-center text-center px-4">
+        <div class="text-5xl mb-2">🖼️</div>
+        <div class="text-xl font-extrabold text-white">เครื่องมือรูปภาพ</div>
+        <div class="text-sm text-white/85 mt-1">อัปโหลดรูปเป็นลิงก์ • ลบพื้นหลังโปร่งใส</div>
+    </div>
+            </a>
+
             
             <!-- ===== แบนเนอร์ แคลนฟรีฟาย ===== -->
 <a id="clan-banner" href="https://eroomaji-gif.github.io/index.html/"
@@ -1892,7 +1902,7 @@ document.addEventListener('click', async function (e) {
 
         // แบนเนอร์ จำหน่ายไอดีเกม: กดแล้วส่งโทเค็นไปกับลิงก์
 document.addEventListener('click', async function (e) {
-    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner, #apps-banner') : null;
+    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner, #apps-banner, #tools-banner') : null;
     if (!banner) return;
     e.preventDefault();
     let url = banner.getAttribute('href');
