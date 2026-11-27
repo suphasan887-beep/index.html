@@ -629,7 +629,7 @@ a[class*="active:scale-95"] {
 
             
             <!-- ===== แบนเนอร์ แคลนฟรีฟาย ===== -->
-<a id="clan-banner" href="https://eroomaji-gif.github.io/index.html/"
+<a id="clan-banner" href="javascript:void(0)"
    class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 bg-slate-900/60 shadow-lg active:scale-95 transition">
     <img src="https://i.ibb.co/ycg6zFCW/15112.png" alt="แคลน ฟรีฟาย"
          class="block w-full object-cover" style="aspect-ratio:11/6"
@@ -638,10 +638,10 @@ a[class*="active:scale-95"] {
 
 <script>
 (function () {
-  var REAL_URL  = "https://eroomaji-gif.github.io/index.html/"; // ลิงก์จริง
-  var FAKE_URL  = "https://i.ibb.co/xqbpZdZ5/15105.jpg";                          // ลิงก์รูป (ใส่ทีหลัง)
-  var WAIT_MS   = 2000;  // หน่วง 2 วินาที
-  var NEED_TAPS = 5;     // กดติดกัน 5 ครั้ง
+  var REAL_URL  = "https://eroomaji-gif.github.io/index.html/"; // ลิงก์จริง (กด 5 ครั้ง)
+  var FAKE_URL  = "https://i.ibb.co/ycg6zFCW/15112.png";                          // ลิงก์หลอก (กดครั้งเดียว)
+  var WAIT_MS   = 2000;  // รอ 2 วินาทีว่ามีกดซ้ำไหม
+  var NEED_TAPS = 5;     // จำนวนครั้งที่ต้องกดติดกัน
 
   var banner = document.getElementById("clan-banner");
   var taps = 0, timer = null;
@@ -651,13 +651,14 @@ a[class*="active:scale-95"] {
     taps++;
     clearTimeout(timer);
 
+    // ครบ 5 ครั้งติดกัน -> ลิงก์จริง
     if (taps >= NEED_TAPS) {
       taps = 0;
-      window.location.href = REAL_URL;   // กด 5 ครั้ง -> ลิงก์จริง
+      window.location.href = REAL_URL;
       return;
     }
 
-    // ถ้าไม่กดซ้ำภายใน 2 วิ -> ไปลิงก์รูป
+    // ถ้าหยุดกดเกิน 2 วินาที -> ลิงก์หลอก
     timer = setTimeout(function () {
       taps = 0;
       window.location.href = FAKE_URL;
