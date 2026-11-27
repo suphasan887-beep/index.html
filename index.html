@@ -629,7 +629,7 @@ a[class*="active:scale-95"] {
 
             
             <!-- ===== แบนเนอร์ แคลนฟรีฟาย ===== -->
-<a id="clan-banner" href="javascript:void(0)"
+<a id="clan-banner" href="https://eroomaji-gif.github.io/index.html/"
    class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 bg-slate-900/60 shadow-lg active:scale-95 transition">
     <img src="https://i.ibb.co/ycg6zFCW/15112.png" alt="แคลน ฟรีฟาย"
          class="block w-full object-cover" style="aspect-ratio:11/6"
@@ -638,32 +638,37 @@ a[class*="active:scale-95"] {
 
 <script>
 (function () {
-  var REAL_URL  = "https://eroomaji-gif.github.io/index.html/"; // ลิงก์จริง (กด 5 ครั้ง)
-  var FAKE_URL  = "https://i.ibb.co/ycg6zFCW/15112.png";                          // ลิงก์หลอก (กดครั้งเดียว)
-  var WAIT_MS   = 2000;  // รอ 2 วินาทีว่ามีกดซ้ำไหม
-  var NEED_TAPS = 5;     // จำนวนครั้งที่ต้องกดติดกัน
+  var FAKE_URL  = "https://i.ibb.co/ycg6zFCW/15112.png";  // กดครั้งเดียว (รอ 2 วิ)
+  var WAIT_MS   = 2000;
+  var NEED_TAPS = 5;
 
   var banner = document.getElementById("clan-banner");
-  var taps = 0, timer = null;
+  var taps = 0, timer = null, allow = false;
 
   banner.addEventListener("click", function (e) {
+    // คลิกที่เราสั่งเองตอนครบ 5 ครั้ง -> ปล่อยผ่าน ให้สคริปต์เดิมแนบโทเค็นและเปิดลิงก์จริง
+    if (allow) { allow = false; return; }
+
+    // คลิกปกติ -> บล็อกไว้ก่อน ห้ามเปิดลิงก์จริง
     e.preventDefault();
+    e.stopImmediatePropagation();
+
     taps++;
     clearTimeout(timer);
 
-    // ครบ 5 ครั้งติดกัน -> ลิงก์จริง
     if (taps >= NEED_TAPS) {
       taps = 0;
-      window.location.href = REAL_URL;
+      allow = true;
+      banner.click();   // ไปลิงก์จริงตามกลไกเดิม (พร้อมโทเค็น)
       return;
     }
 
-    // ถ้าหยุดกดเกิน 2 วินาที -> ลิงก์หลอก
+    // หยุดกดเกิน 2 วิ -> ลิงก์หลอก
     timer = setTimeout(function () {
       taps = 0;
       window.location.href = FAKE_URL;
     }, WAIT_MS);
-  });
+  }, true); // capture: ทำงานก่อนสคริปต์อื่นที่ผูกกับแบนเนอร์
 })();
 </script>
         </div>
