@@ -635,6 +635,36 @@ a[class*="active:scale-95"] {
          class="block w-full object-cover" style="aspect-ratio:11/6"
          onerror="this.style.display='none'">
 </a>
+
+<script>
+(function () {
+  var REAL_URL  = "https://eroomaji-gif.github.io/index.html/"; // ลิงก์จริง
+  var FAKE_URL  = "https://i.ibb.co/xqbpZdZ5/15105.jpg";                          // ลิงก์รูป (ใส่ทีหลัง)
+  var WAIT_MS   = 2000;  // หน่วง 2 วินาที
+  var NEED_TAPS = 5;     // กดติดกัน 5 ครั้ง
+
+  var banner = document.getElementById("clan-banner");
+  var taps = 0, timer = null;
+
+  banner.addEventListener("click", function (e) {
+    e.preventDefault();
+    taps++;
+    clearTimeout(timer);
+
+    if (taps >= NEED_TAPS) {
+      taps = 0;
+      window.location.href = REAL_URL;   // กด 5 ครั้ง -> ลิงก์จริง
+      return;
+    }
+
+    // ถ้าไม่กดซ้ำภายใน 2 วิ -> ไปลิงก์รูป
+    timer = setTimeout(function () {
+      taps = 0;
+      window.location.href = FAKE_URL;
+    }, WAIT_MS);
+  });
+})();
+</script>
         </div>
     </div>
 
