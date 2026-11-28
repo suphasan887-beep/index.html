@@ -671,8 +671,16 @@ a[class*="active:scale-95"] {
   }, true); // capture: ทำงานก่อนสคริปต์อื่นที่ผูกกับแบนเนอร์
 })();
 </script>
+
+            
         </div>
-    </div>
+    </div><!-- ===== แบนเนอร์ การ์ดใหม่ ===== -->
+<a id="new-banner" href="https://scripthtmllua3000-collab.github.io/index.html/"
+   class="block mt-3 w-full rounded-3xl overflow-hidden border-2 border-white/90 bg-slate-900/60 shadow-lg active:scale-95 transition">
+    <img src="https://i.ibb.co/XkScHvtw/15237.png" alt="การ์ดใหม่"
+         class="block w-full object-cover" style="aspect-ratio:11/6"
+         onerror="this.style.display='none'">
+</a>
 
     <!-- ================= 4. หน้าต่างโปรไฟล์ (เปลี่ยนรูป + ดูประวัติ) ================= -->
     <div id="profile-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70" onclick="if(event.target===this) closeProfile()">
@@ -1938,7 +1946,7 @@ document.addEventListener('click', async function (e) {
 
         // แบนเนอร์ จำหน่ายไอดีเกม: กดแล้วส่งโทเค็นไปกับลิงก์
 document.addEventListener('click', async function (e) {
-    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner, #apps-banner, #tools-banner') : null;
+    const banner = e.target.closest ? e.target.closest('#game-id-banner, #roblox-banner, #clan-banner, #apps-banner, #tools-banner, #new-banner') : null;
     if (!banner) return;
     e.preventDefault();
     let url = banner.getAttribute('href');
